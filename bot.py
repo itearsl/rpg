@@ -1,5 +1,7 @@
 from characters import Warrior, Mage
 import random
+import traceback
+import datetime
 import sqlite3
 from vk_api import VkApi
 from vk_api.upload import VkUpload
@@ -70,22 +72,8 @@ while True:
                     vk.messages.send(
                         random_id=random.randint(1,10**90),
                         peer_id=peer_id,
-                        message=f"Команды:\n"
-                                f"🔹 !погода\n"
-                                f"🔹 !Шанс (можно писать в любом месте предложения)\n"
-                                f"🔹 Ставь лайк\n"
-                                f"🔹 !Новости\n"
-                                f"🔹 !Кто\n"
-                                f"🔹 !Регистрация\n"
-                                f"🔹 !Моя анкета\n"
-                                f"🔹 !Удалить анкету\n"
-                                f"🔹 !Фото\n"
-                                f"🔹 !Пик\n"
-                                f"🔹 !Поиск\n"
-                                f"🔹 !Добавить сервер\n"
-                                f"🔹 !График\n"
-                                f"🔹 !Созвать\n"
-                                f"🔹 !Название\n",
+                        message="Команды:\n"
+                                "🔹 !Создать персонажа"
                     )
                 elif event.message.text.lower() == "!создать персонажа" and event.message.from_id not in condition:
                     peer_id = event.object.message['peer_id']
@@ -103,7 +91,7 @@ while True:
                         vk.messages.send(
                             random_id=random.randint(1,10**90),
                             peer_id=event.object.message['peer_id'],
-                            message=f"Жаль что мы не поиграем",
+                            message="Жаль что мы не поиграем",
                         )
                         condition.pop(event.message.from_id)
                         continue
@@ -121,9 +109,9 @@ while True:
                     condition.pop(event.message.from_id)
     except Exception as err:
         with open("err_log.txt", "a") as log:
-            log.write(f"{traceback.format_exc()} {str(datetime.datetime.now())}\n\n")
+            log.write("{} {}\n\n".format(traceback.format_exc(), str(datetime.datetime.now())))
         vk.messages.send(
-            random_id=rand(),
+            random_id=random.randint(1,10**90),
             peer_id=admin,
             message=f"Вылет",
         )

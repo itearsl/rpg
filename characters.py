@@ -16,22 +16,22 @@ class Character():
         self.inventory = []
 
     def attack(self):
-        return [f"*Вы нанесли {self.damage + self.strength} урона*", self.damage + self.str]
+        return self.damage + self.str
 
     def defend(self):
         d = random.randint(1, 6)
         if d == 5 or d == 6:
-            return [f"*Вы полностью заблокировали урон*", True]
+            return True
         else:
-            return [f"*Вы поставили блок, но монстр все равно вас задел*", False]
+            return False
 
     def evasion(self):
         chance = (100 + self.agility)*self.evasion_modify
         d = random.randint(1, 100)
         if d < chance:
-            return [f"*Вы уклонились от удара*", True]
+            return True
         else:
-            return [f"*Вы не смогли уклониться*", False]
+            return False
 
 
 class Warrior(Character):
@@ -42,7 +42,7 @@ class Warrior(Character):
         self.intelligence = 2 + intelligence
         self.armor = 5
     def strong_attack(self):
-        return [f"*Вы проводите сильный удар, нанося {(self.damage+self.strength)*2}", (self.damage+self.str)*2]
+        return (self.damage+self.str)*2
 
 class Mage(Character):
     def __init__(self, name, strength, agility, intelligence):
@@ -53,8 +53,7 @@ class Mage(Character):
         self.armor = 1
 
     def fireball(self):
-        return [f"*Вы запускаете огненный шар в сушество нанося {10 + self.intelligence} урона*",
-                10 + self.intelligence]
+        return 10 + self.intelligence
 
 class Rogue(Character):
     def __init__(self, name, strength, agility, intelligence):
@@ -66,7 +65,6 @@ class Rogue(Character):
         self.evasion_modify = 0.14
 
     def backstab(self):
-        return [f"*Вы телепортируетесь существу за спину и наносите {10 + self.agility} урона*",
-                10 + self.intelligence]
+        return 10 + self.intelligence
 
 
