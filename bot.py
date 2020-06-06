@@ -2,11 +2,11 @@ from characters import Warrior, Mage
 import random
 import traceback
 import datetime
-import sqlite3
 from vk_api import VkApi
 from vk_api.upload import VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import configure_texts
+import data_base
 
 vkToken = "a244f42cfaacef0f2fc24a253e56023acb0b7ab2f4eb92a3d3678774762aa88114969172edf49b9fa00c9"
 admin = 243578504
@@ -35,25 +35,8 @@ longpoll = VkBotLongPoll(vk_session, club)
 vk = vk_session.get_api()
 upload = VkUpload(vk_session)
 
-
-
-
-# Create character
-def create_character(character, id):
-    try:
-        conn = sqlite3.connect("characters.db")
-        cursor = conn.cursor()
-        cursor.execute("insert into characters values(?,?,?,?,?,?,?,?,?)",
-                       (id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.str,
-                        character.agil, character.int, str(character.inventory)))
-        conn.commit()
-        conn.close()
-        message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl, character.lvl, character.str,
-                        character.agil, character.int, str(character.inventory)))
-        return message
-    except:
-        message = "ошибка"
-        return message
+#init DB
+db = data_base.DB()
 
 # Download and Upload
 while True:
@@ -93,7 +76,7 @@ while True:
                         characters[event.message.from_id] = Warrior(char[0],int(char[2]), int(char[3]), int(char[4]))
                     elif char[1].lower() == 'маг':
                         characters[event.message.from_id] = Mage(char[0], int(char[2]), int(char[3]), int(char[4]))
-                    mes = create_character(characters[event.message.from_id], event.message.from_id)
+                    mes = db.create_character(characters[event.message.from_id], event.message.from_id)
                     vk.messages.send(
                         random_id = random.randint(1,10**90),
                         peer_id=event.object.message['peer_id'],

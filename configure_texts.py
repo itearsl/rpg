@@ -1,6 +1,9 @@
 
 import configparser
 
+path = "settings.ini"
+config = configparser.ConfigParser()
+config.read(path)
 
 def createConfig(path):
     """
@@ -40,7 +43,6 @@ def createConfig(path):
 &#10035; Ловкость: {}
 &#128160; Интелект: {}
 
-&#128313; Инвентарь: {}
 """)
     #config.set("Config","")
     with open(path, "w") as config_file:
@@ -62,14 +64,9 @@ def create_hero():
     return config.get("Config",'create_hero')
 
 
-def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, inventory):
-    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, inventory)
+def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility):
+    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength, agility, intelligence)
 
 
-if __name__ == "__main__":
-    path = "settings.ini"
-    createConfig(path)
-    config = configparser.ConfigParser()
-    config.read(path)
 
-    print(characteristics("vlad",10,1000,3,12,3,1,"kal"))
+createConfig(path)

@@ -12,7 +12,7 @@ class Character():
         self.health = 40 + self.strength*self.lvl
         self.evasion_modify = 0.05
         self.exp = 0
-        self.exp_next_lvl = exp(self.lvl)
+        self.exp_next_lvl = round(exp(self.lvl))
         self.inventory = []
 
     def attack(self):
@@ -66,5 +66,4 @@ class Rogue(Character):
 
     def backstab(self):
         return 10 + self.intelligence
-
 

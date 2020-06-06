@@ -88,3 +88,11 @@ Traceback (most recent call last):
 sqlite3.OperationalError: no such table: characters
  2020-06-03 17:36:28.942673
 
+Traceback (most recent call last):
+  File "D:/Programming/Python/rpg_bot/bot.py", line 79, in <module>
+    mes = db.create_character(characters[event.message.from_id], event.message.from_id)
+  File "D:\Programming\Python\rpg_bot\data_base.py", line 25, in create_character
+    self.cursor.execute("insert into characters values(?,?,?,?,?,?,?,?)",
+AttributeError: 'DB' object has no attribute 'cursor'
+ 2020-06-06 15:54:44.897189
+
