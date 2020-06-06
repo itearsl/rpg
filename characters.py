@@ -6,7 +6,7 @@ class Character():
         self.intelligence = 0
         self.strength = 0
         self.agility = 0
-        self.lvl = 0
+        self.lvl = 1  # УРОВЕНЬ НАЧИНАЕТСЯ С 1
         self.damage = 5
         self.armor = 0
         self.health = 40 + self.strength*self.lvl
@@ -16,14 +16,14 @@ class Character():
         self.inventory = []
 
     def attack(self):
-        return self.damage + self.str
+        return self.damage + self.strength
 
     def defend(self):
         d = random.randint(1, 6)
-        if d == 5 or d == 6:
+        if d > 4:
             return True
-        else:
-            return False
+
+        return False
 
     def evasion(self):
         chance = (100 + self.agility)*self.evasion_modify
@@ -42,7 +42,7 @@ class Warrior(Character):
         self.intelligence = 2 + intelligence
         self.armor = 5
     def strong_attack(self):
-        return (self.damage+self.str)*2
+        return (self.damage+self.strength)*2
 
 class Mage(Character):
     def __init__(self, name, strength, agility, intelligence):

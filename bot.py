@@ -6,7 +6,7 @@ import sqlite3
 from vk_api import VkApi
 from vk_api.upload import VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-
+import configure_texts
 
 vkToken = "a244f42cfaacef0f2fc24a253e56023acb0b7ab2f4eb92a3d3678774762aa88114969172edf49b9fa00c9"
 admin = 243578504
@@ -48,15 +48,8 @@ def create_character(character, id):
                         character.agil, character.int, str(character.inventory)))
         conn.commit()
         conn.close()
-        message = f"Ваш персонаж:\n" \
-                  f"Имя: {character.name}\n" \
-                  f"Опыт: {character.exp}\n" \
-                  f"Опыт для лвл апа: {character.exp_next_lvl}\n" \
-                  f"Уровень: {character.lvl}\n" \
-                  f"Сила: {character.str}\n" \
-                  f"Ловкость: {character.agil}\n" \
-                  f"Интелект: {character.int}\n" \
-                  f"Инвентарь: {str(character.inventory)}\n"
+        message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl, character.lvl, character.str,
+                        character.agil, character.int, str(character.inventory)))
         return message
     except:
         message = "ошибка"
