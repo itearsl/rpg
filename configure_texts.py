@@ -65,7 +65,7 @@ def create_hero():
 
 
 def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility):
-    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength, agility, intelligence)
+    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility)
 
 
 

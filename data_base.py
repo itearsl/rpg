@@ -20,20 +20,19 @@ class DB():
                     port=3528)
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
-    def create_character(self, character, id):
-        try:
+    async def create_character(self, character, id):
+        # try:
             self.cur.execute("insert into characters values(%s,%s,%s,%s,%s,%s,%s,%s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
                            character.agility, character.intelligence))
             self.conn.commit()
-            self.conn.close()
             message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl,
                                                       character.lvl, character.strength,
                                                       character.agility, character.intelligence)
             return message
-        except:
-            message = "ошибка"
-            return message
-        def close():
-            self.conn.close()
+        # except:
+        #     message = "ошибка"
+        #     return message
+    def close(self):
+        self.conn.close()
