@@ -1,13 +1,7 @@
 import asyncio
+import random
 import pymysql
 import configure_texts
-
-con = pymysql.connect(host='localhost',
-                    user='root',
-                    passwd='qwe13245',
-                    db='rpg',
-                    charset="utf8",
-                    port=3528)
 
 # Класс для управления БД
 class DB():
@@ -21,7 +15,7 @@ class DB():
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
     async def create_character(self, character, id):
-        # try:
+        try:
             self.cur.execute("insert into characters values(%s,%s,%s,%s,%s,%s,%s,%s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
@@ -31,8 +25,30 @@ class DB():
                                                       character.lvl, character.strength,
                                                       character.agility, character.intelligence)
             return message
-        # except:
-        #     message = "ошибка"
-        #     return message
+        except:
+            message = "ошибка"
+            return message
+    async def show_character(self, id):
+        self.cur.execute("select name, exp, exp_next_lvl, lvl, strength, agility, intelligence "
+                         "from characters "
+                         "where id = %s", (id)),
+        char = self.cur.fetchone()
+        message = configure_texts.characteristics(char[0], char[1], char[2],
+                                                  char[3], char[4],
+                                                  char[5], char[6])
+        return message
+    async def delete_character(self, id):
+        try:
+            self.cur.execute("delete from characters where id = %s", (id))
+            self.conn.commit()
+            message = "Персонаж успешно удален"
+            return message
+        except:
+            message = "Ошибка."
+            return message
+    async def add_item(self, item):
+        self.cur.execute("insert into items(name, lvl, type, value) values (%s, %s, %s, %s)",
+                         ("{} {}".format(item[0], item[1]), item[2], item[3], item[4]))
+        self.conn.commit()
     def close(self):
         self.conn.close()
