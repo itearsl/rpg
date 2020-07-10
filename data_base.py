@@ -50,7 +50,7 @@ class DB():
                          "join inventory on characters.inventory = inventory.player_id "
                          "where id = %s", (id))
         char = self.cur.fetchone()
-        print(char)
+
     async def delete_character(self, id):
         try:
             self.cur.execute("delete from characters where id = %s", (id))

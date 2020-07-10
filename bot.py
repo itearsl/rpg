@@ -2,15 +2,22 @@ from characters import Warrior, Mage, Rogue
 import random
 import traceback
 import datetime
+import configparser
 from vk_api import VkApi
 from vk_api.upload import VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import data_base
 import asyncio
 
-vkToken = "a244f42cfaacef0f2fc24a253e56023acb0b7ab2f4eb92a3d3678774762aa88114969172edf49b9fa00c9"
-admin = 243578504
-club = 194548161
+path = "config.ini"
+config = configparser.ConfigParser()
+config.read(path)
+
+vkToken = config.get("Config",'vkToken')
+admin = config.get("Config",'admin')
+club = config.get("Config",'club')
+
+random_number_message = 10 ** 100
 
 #Персонажи
 characters={
@@ -45,7 +52,7 @@ async def bot_cycle():
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk.messages.send(
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             peer_id=peer_id,
                             message="Команды:\n"
                                     "🔹 !Создать персонажа"
@@ -54,7 +61,7 @@ async def bot_cycle():
                         peer_id = event.object.message['peer_id']
                         vk.messages.send(
                             peer_id=peer_id,
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             message="Сейчас начнется создание персонажа, введите <ник класс сила(число) ловкость(число) интелект(число)> своего персонажа. Точно "
                                     "так же как в примере, только без треугольных скобок. "
                                     "У вас 7 очков чтобы распределить их на силу ловкость и интелект"
@@ -64,20 +71,20 @@ async def bot_cycle():
                         mes_char = await db.show_character(event.message.from_id)
                         await db.load_character(event.message.from_id)
                         vk.messages.send(
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             peer_id=event.object.message['peer_id'],
                             message=mes_char,
                         )
                     elif event.message.text.lower() == "!удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
                         vk.messages.send(
-                            random_id = random.randint(1,10**90),
+                            random_id = random.randint(1, random_number_message),
                             peer_id = event.object.message["peer_id"],
                             message = del_message,
                         )
                     elif event.message.text.lower() == "!предметы" and event.message.from_id not in condition and (event.message.from_id == 176803261 or event.message.from_id == admin):
                         vk.messages.send(
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             peer_id=event.object.message['peer_id'],
                             message="можешь начинать(!выход для остановки). Вводи в таком вормате:"
                                     "<название lvl тип(оружие/броня) значение(урон/защита)>\n"
@@ -89,7 +96,7 @@ async def bot_cycle():
                     elif event.message.from_id in condition and condition[event.message.from_id] == "создание персонажа":
                         if event.message.text.lower() == "!выход":
                             vk.messages.send(
-                                random_id=random.randint(1, 10 ** 90),
+                                random_id=random.randint(1, random_number_message),
                                 peer_id=event.object.message['peer_id'],
                                 message="Жаль что мы не поиграем",
                             )
@@ -104,7 +111,7 @@ async def bot_cycle():
                             characters[event.message.from_id] = Rogue(char[0], int(char[2]), int(char[3]), int(char[4]))
                         mes = await db.create_character(characters[event.message.from_id], event.message.from_id)
                         vk.messages.send(
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             peer_id=event.object.message['peer_id'],
                             message=mes,
                         )
@@ -112,7 +119,7 @@ async def bot_cycle():
                     elif event.message.from_id in condition and condition[event.message.from_id] == "предметы":
                         if event.message.text.lower() == "!выход":
                             vk.messages.send(
-                                random_id=random.randint(1, 10 ** 90),
+                                random_id=random.randint(1, random_number_message),
                                 peer_id=event.object.message['peer_id'],
                                 message="Жаль что мы не поиграем",
                             )
@@ -121,7 +128,7 @@ async def bot_cycle():
                         item = event.message.text.split(" ")
                         await db.add_item(item)
                         vk.messages.send(
-                            random_id=random.randint(1, 10 ** 90),
+                            random_id=random.randint(1, random_number_message),
                             peer_id=event.object.message['peer_id'],
                             message="Предмет добавлен",
                         )

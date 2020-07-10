@@ -11,15 +11,15 @@ def createConfig(path):
     """
     config = configparser.ConfigParser()
 
-    config.add_section("Config")
+    config.add_section("Settings")
 
-    config.set("Config", "terrain", "Вы пришли в {}")
+    config.set("Settings", "terrain", "Вы пришли в {}")
 
-    config.set("Config", "attack", "Вас атаковал {} на {}")
+    config.set("Settings", "attack", "Вас атаковал {} на {}")
 
-    config.set("Config", "hp", "Здоровье: {}/{} ")
+    config.set("Settings", "hp", "Здоровье: {}/{} ")
 
-    config.set("Config","create_hero",
+    config.set("Settings","create_hero",
 """     
 &#128312; Создание персонажа.
 &#128312; Вам нужно ввести следующие данные:
@@ -30,7 +30,7 @@ def createConfig(path):
 КНОПКИ: СИЛА ЛОВКОСТЬ ИНТЕЛЛЕКТ
 """)
 
-    config.set("Config","characteristics",
+    config.set("Settings","characteristics",
 """
 &#128312; Ваш персонаж:
 
@@ -56,22 +56,22 @@ def createConfig(path):
 
 
 def Terrain(terr):
-    return (config.get("Config",'Terrain')).format(terr)
+    return (config.get("Settings",'Terrain')).format(terr)
 
 def Attack(monster,damage):
 
-    return (config.get("Config",'attack')).format(monster,damage)
+    return (config.get("Settings",'attack')).format(monster,damage)
 
 def hp(now,max):
-    return (config.get("Config",'hp')).format(now,max)
+    return (config.get("Settings",'hp')).format(now,max)
 
 
 def create_hero():
-    return config.get("Config",'create_hero')
+    return config.get("Settings",'create_hero')
 
 
 def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
-    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
+    return (config.get("Settings", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
                                                             weapon, head, body, hands, legs)
 
 
