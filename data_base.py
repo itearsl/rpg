@@ -16,10 +16,10 @@ class DB():
     # Записываем персонажа в БД
     async def create_character(self, character, id):
         try:
-            self.cur.execute("insert into characters values(%s,%s,%s,%s,%s,%s,%s,%s)",
+            self.cur.execute("insert into characters values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
-                           character.agility, character.intelligence))
+                           character.agility, character.intelligence,id))
             self.conn.commit()
             message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl,
                                                       character.lvl, character.strength,
@@ -29,14 +29,28 @@ class DB():
             message = "ошибка"
             return message
     async def show_character(self, id):
-        self.cur.execute("select name, exp, exp_next_lvl, lvl, strength, agility, intelligence "
+        self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
+                         "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
+                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
                          "from characters "
-                         "where id = %s", (id)),
+                         "join inventory on characters.inventory = inventory.player_id "
+                         "where id = %s", (id))
         char = self.cur.fetchone()
         message = configure_texts.characteristics(char[0], char[1], char[2],
                                                   char[3], char[4],
-                                                  char[5], char[6])
+                                                  char[5], char[6],
+                                                  char[7], char[8], char[9], char[10], char[11])
         return message
+
+    async def load_character(self, id):
+        self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
+                         "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
+                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
+                         "from characters "
+                         "join inventory on characters.inventory = inventory.player_id "
+                         "where id = %s", (id))
+        char = self.cur.fetchone()
+        print(char)
     async def delete_character(self, id):
         try:
             self.cur.execute("delete from characters where id = %s", (id))

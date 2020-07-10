@@ -43,6 +43,12 @@ def createConfig(path):
 &#10035; Ловкость: {}
 &#128160; Интелект: {}
 
+&#128188; Инвентарь:
+&#9876; Оружие: {} урон
+&#9937; Голова: {} броня
+&#128085; Тело: {} броня
+&#129508; Руки: {} броня
+&#128094; Ноги: {} броня
 """)
     #config.set("Config","")
     with open(path, "w") as config_file:
@@ -64,8 +70,9 @@ def create_hero():
     return config.get("Config",'create_hero')
 
 
-def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility):
-    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility)
+def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
+    return (config.get("Config", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
+                                                            weapon, head, body, hands, legs)
 
 
 

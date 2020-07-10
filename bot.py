@@ -39,7 +39,7 @@ db = data_base.DB()
 
 async def bot_cycle():
     while True:
-        try:
+        # try:
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
@@ -62,6 +62,7 @@ async def bot_cycle():
                         condition[event.message.from_id] = "создание персонажа"
                     elif event.message.text.lower() == "!мой персонаж" and event.message.from_id not in condition:
                         mes_char = await db.show_character(event.message.from_id)
+                        await db.load_character(event.message.from_id)
                         vk.messages.send(
                             random_id=random.randint(1, 10 ** 90),
                             peer_id=event.object.message['peer_id'],
@@ -126,22 +127,20 @@ async def bot_cycle():
                         )
 
 
-        except Exception as err:
-            with open("err_log.txt", "a") as log:
-                log.write("{} {}\n\n".format(traceback.format_exc(), str(datetime.datetime.now())))
-            vk.messages.send(
-                random_id=random.randint(1,10**90),
-                peer_id=admin,
-                message="Вылет",
-            )
-            condition = {}
+        # except Exception as err:
+        #     with open("err_log.txt", "a") as log:
+        #         log.write("{} {}\n\n".format(traceback.format_exc(), str(datetime.datetime.now())))
+        #     vk.messages.send(
+        #         random_id=random.randint(1,10**90),
+        #         peer_id=admin,
+        #         message="Вылет",
+        #     )
+        #     condition = {}
 
 
 async def main():
     bot_cycle_task = asyncio.create_task(bot_cycle())
     await asyncio.gather(bot_cycle_task)
-
-# Download and Upload
 
 if __name__ == '__main__':
     asyncio.run(main())

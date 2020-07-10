@@ -65,5 +65,5 @@ class Rogue(Character):
         self.evasion_modify = 0.14
 
     def backstab(self):
-        return 10 + self.intelligence
+        return 10 + self.agility
 
