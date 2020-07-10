@@ -67,9 +67,11 @@ async def load_characters_f():
 
 
 async def bot_cycle():
+    load_characters = True
     while True:
         # try:
             if load_characters == True:
+                load_characters = False
                 await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
@@ -173,7 +175,6 @@ async def main():
     await asyncio.gather(bot_cycle_task)
 
 if __name__ == '__main__':
-    load_characters = True
     asyncio.run(main())
 
 
