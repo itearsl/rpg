@@ -23,7 +23,6 @@ random_number_message = 10 ** 100
 characters={
 
 }
-# Registration phrases
 
 # Состояния
 state = {
@@ -44,9 +43,34 @@ db = data_base.DB()
 
 
 
+async def load_characters_f():
+    chars = await db.load_characters()
+    for character in chars:
+        if character[8] == 'Warrior':
+            characters[character[0]] = Warrior(character[1], int(character[5]), int(character[6]), int(character[7]))
+        elif character[8] == 'Mage':
+            characters[character[0]] = Mage(character[1], int(character[5]), int(character[6]), int(character[7]))
+        elif character[8] == 'Rogue':
+            characters[character[0]] = Rogue(character[1], int(character[5]), int(character[6]), int(character[7]))
+        characters[character[0]].strength = int(character[5])
+        characters[character[0]].agility = int(character[6])
+        characters[character[0]].intelligence = int(character[7])
+        weapon = character[9].split(" ")
+        head = character[10].split(" ")
+        body = character[11].split(" ")
+        hands = character[12].split(" ")
+        legs = character[13].split(" ")
+        armor = int(head[1]) + int(body[1]) + int(legs[1]) + int(hands[1])
+        damage = int(weapon[1])
+        characters[character[0]].damage += damage
+        characters[character[0]].armor += armor
+
+
 async def bot_cycle():
     while True:
         # try:
+            if load_characters == True:
+                await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
@@ -69,7 +93,6 @@ async def bot_cycle():
                         condition[event.message.from_id] = "создание персонажа"
                     elif event.message.text.lower() == "!мой персонаж" and event.message.from_id not in condition:
                         mes_char = await db.show_character(event.message.from_id)
-                        await db.load_character(event.message.from_id)
                         vk.messages.send(
                             random_id=random.randint(1, random_number_message),
                             peer_id=event.object.message['peer_id'],
@@ -150,6 +173,7 @@ async def main():
     await asyncio.gather(bot_cycle_task)
 
 if __name__ == '__main__':
+    load_characters = True
     asyncio.run(main())
 
 

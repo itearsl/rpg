@@ -42,14 +42,15 @@ class DB():
                                                   char[7], char[8], char[9], char[10], char[11])
         return message
 
-    async def load_character(self, id):
-        self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
-                         "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
+    async def load_characters(self):
+        self.cur.execute("select characters.id, characters.name, characters.exp, characters.exp_next_lvl, "
+                         "characters.lvl, characters.strength, characters.agility, characters.intelligence, characters.class, "
                          "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
                          "from characters "
                          "join inventory on characters.inventory = inventory.player_id "
-                         "where id = %s", (id))
-        char = self.cur.fetchone()
+                         )
+        chars = self.cur.fetchall()
+        return chars
 
     async def delete_character(self, id):
         try:

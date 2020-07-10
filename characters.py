@@ -37,6 +37,7 @@ class Character():
 class Warrior(Character):
     def __init__(self, name, strength, agility, intelligence):
         super().__init__(name)
+        self.specialist = "Warrior"
         self.strength = 5 + strength
         self.agility = 3 + agility
         self.intelligence = 2 + intelligence
@@ -47,6 +48,7 @@ class Warrior(Character):
 class Mage(Character):
     def __init__(self, name, strength, agility, intelligence):
         super().__init__(name)
+        self.specialist = "Mage"
         self.strength = 1 + strength
         self.agility = 3 + agility
         self.intelligence = 6 + intelligence
@@ -58,6 +60,7 @@ class Mage(Character):
 class Rogue(Character):
     def __init__(self, name, strength, agility, intelligence):
         super().__init__(name)
+        self.specialist = "Rogue"
         self.strength = 2 + strength
         self.agility = 6 + agility
         self.intelligence = 2 + intelligence
@@ -67,3 +70,8 @@ class Rogue(Character):
     def backstab(self):
         return 10 + self.agility
 
+
+rog = Rogue("lol", 1,1,1)
+print(rog.lvl, rog.exp_next_lvl)
+rog.lvl = 3
+print(rog.lvl, rog.exp_next_lvl)
