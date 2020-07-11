@@ -1,9 +1,9 @@
 import random
 
 class Monster():
-    def __init__(self, name):
+    def __init__(self, name, lvl):
         self.name = name
-        self.lvl = 1
+        self.lvl = lvl or 1
         self.health = 15 + 2*self.lvl
         self.damage = 5
         self.armor = 0
@@ -20,38 +20,38 @@ class Monster():
 
 
 class Goblin(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 1 + self.lvl*2
         self.health = 13 + self.lvl*2
 
 
 class Skeleton(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 2 + self.lvl*2
         self.health = 15 + self.lvl*2
 
 class Grog(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 5 + self.lvl*2
         self.health = 23 + self.lvl*2
 
 class King_fire_slug(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 8 + self.lvl*2
         self.health = 28 + self.lvl*2
 
 class Vile_fiend(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 6 + self.lvl*2
         self.health = 21 + self.lvl*2
 
 class Troll(Monster):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, lvl):
+        super().__init__(name, lvl)
         self.damage = 13 + self.lvl*2
         self.health = 38 + self.lvl*2

@@ -1,4 +1,6 @@
 from characters import Warrior, Mage, Rogue
+from configure_texts import hero_attack, monster_attack
+import monsters
 import random
 import traceback
 import datetime
@@ -75,7 +77,14 @@ async def load_characters_f():
         characters[id_user].damage += damage
         characters[id_user].armor += armor
 
+def vk_mssage(mes, peer_id):
+    vk.messages.send(
+        random_id = random.randint(1, random_number_message),
+        peer_id = peer_id,
+        message = mes
+    )
 
+gob = monsters.Goblin("гоблин", 1)
 async def bot_cycle():
     load_characters = True
     while True:
@@ -86,6 +95,7 @@ async def bot_cycle():
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
+                        condition[event.message.from_id] = "бой"
                         peer_id = event.object.message['peer_id']
                         vk.messages.send(
                             random_id=random.randint(1, random_number_message),
@@ -175,6 +185,24 @@ async def bot_cycle():
                             peer_id=event.object.message['peer_id'],
                             message="Предмет добавлен",
                         )
+                    elif event.message.from_id in condition and condition[event.message.from_id] == "бой":
+                        if gob.health <= 0:
+                            vk.messages.send(
+                                random_id=random.randint(1, random_number_message),
+                                peer_id=event.object.message['peer_id'],
+                                message="Монстр был повержен"
+                            )
+                            condition.pop(event.message.from_id)
+                            continue
+                        else:
+                            if event.message.text.lower() == "атака":
+                                hero_damage = characters[event.message.from_id].attack()
+                                monster_damage = gob.attack()
+                                vk_mssage(hero_attack(gob.name, hero_damage), event.object.message['peer_id'])
+                                vk_mssage(monster_attack(gob.name, monster_damage), event.object.message['peer_id'])
+                                gob.health -= hero_damage
+                                continue
+
 
 
         # except Exception as err:
