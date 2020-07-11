@@ -15,19 +15,22 @@ class DB():
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
     async def create_character(self, character, id):
-        try:
-            self.cur.execute("insert into characters values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+        # try:
+            self.cur.execute("insert into characters values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
-                           character.agility, character.intelligence,id))
+                           character.agility, character.intelligence, id, character.specialist))
+            self.cur.execute('insert into inventory values(%s,"кинжал-2","пусто-0","порваная накидка-2","пусто-0","лапти-1")',
+                             (id))
             self.conn.commit()
             message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl,
                                                       character.lvl, character.strength,
-                                                      character.agility, character.intelligence)
+                                                      character.agility, character.intelligence,
+                                                      "кинжал-2","пусто-0","порваная накидка-2","пусто-0","лапти-1")
             return message
-        except:
-            message = "ошибка"
-            return message
+        # except:
+        #     message = "ошибка"
+        #     return message
     async def show_character(self, id):
         self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
@@ -55,6 +58,7 @@ class DB():
     async def delete_character(self, id):
         try:
             self.cur.execute("delete from characters where id = %s", (id))
+            self.cur.execute("delete from inventory where player_id = %s", (id))
             self.conn.commit()
             message = "Персонаж успешно удален"
             return message

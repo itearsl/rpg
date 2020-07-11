@@ -55,11 +55,11 @@ async def load_characters_f():
         characters[character[0]].strength = int(character[5])
         characters[character[0]].agility = int(character[6])
         characters[character[0]].intelligence = int(character[7])
-        weapon = character[9].split(" ")
-        head = character[10].split(" ")
-        body = character[11].split(" ")
-        hands = character[12].split(" ")
-        legs = character[13].split(" ")
+        weapon = character[9].split("-")
+        head = character[10].split("-")
+        body = character[11].split("-")
+        hands = character[12].split("-")
+        legs = character[13].split("-")
         armor = int(head[1]) + int(body[1]) + int(legs[1]) + int(hands[1])
         damage = int(weapon[1])
         characters[character[0]].damage += damage
@@ -134,6 +134,14 @@ async def bot_cycle():
                             characters[event.message.from_id] = Mage(char[0], int(char[2]), int(char[3]), int(char[4]))
                         elif char[1].lower() == 'разбойник':
                             characters[event.message.from_id] = Rogue(char[0], int(char[2]), int(char[3]), int(char[4]))
+                        else:
+                            vk.messages.send(
+                                random_id=random.randint(1, random_number_message),
+                                peer_id=event.object.message['peer_id'],
+                                message="такого класса нет в игре",
+                            )
+                            condition.pop(event.message.from_id)
+                            continue
                         mes = await db.create_character(characters[event.message.from_id], event.message.from_id)
                         vk.messages.send(
                             random_id=random.randint(1, random_number_message),
