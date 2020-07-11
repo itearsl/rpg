@@ -19,6 +19,8 @@ club = config.get("Config",'club')
 
 random_number_message = 10 ** 100
 
+
+db_len = 14
 #Персонажи
 characters={
 
@@ -44,26 +46,34 @@ db = data_base.DB()
 
 
 async def load_characters_f():
+
+    """Все равно пока говно, я подумаю как сделать лучше"""
+
     chars = await db.load_characters()
     for character in chars:
+        id_user = character[0]
+        if len(character) != db_len:
+            print("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))  #WRITE TO LOG TOO!!!!
+            continue
         if character[8] == 'Warrior':
-            characters[character[0]] = Warrior(character[1], int(character[5]), int(character[6]), int(character[7]))
+            characters[id_user] = Warrior(character[1], int(character[5]), int(character[6]), int(character[7]))
         elif character[8] == 'Mage':
-            characters[character[0]] = Mage(character[1], int(character[5]), int(character[6]), int(character[7]))
+            characters[id_user] = Mage(character[1], int(character[5]), int(character[6]), int(character[7]))
         elif character[8] == 'Rogue':
-            characters[character[0]] = Rogue(character[1], int(character[5]), int(character[6]), int(character[7]))
-        characters[character[0]].strength = int(character[5])
-        characters[character[0]].agility = int(character[6])
-        characters[character[0]].intelligence = int(character[7])
-        weapon = character[9].split("-")
-        head = character[10].split("-")
-        body = character[11].split("-")
-        hands = character[12].split("-")
-        legs = character[13].split("-")
-        armor = int(head[1]) + int(body[1]) + int(legs[1]) + int(hands[1])
-        damage = int(weapon[1])
-        characters[character[0]].damage += damage
-        characters[character[0]].armor += armor
+            characters[id_user] = Rogue(character[1], int(character[5]), int(character[6]), int(character[7]))
+        characters[id_user].strength = int(character[5])
+        characters[id_user].agility = int(character[6])
+        characters[id_user].intelligence = int(character[7])
+
+        list_armor = []
+
+        for i in range(9, 14):
+            list_armor.append(int(character[i].split("-")[1]))
+        armor = sum(list_armor)
+        damage = int(character[9].split("-")[1])
+
+        characters[id_user].damage += damage
+        characters[id_user].armor += armor
 
 
 async def bot_cycle():
