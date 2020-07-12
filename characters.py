@@ -70,8 +70,3 @@ class Rogue(Character):
     def backstab(self):
         return 10 + self.agility
 
-
-rog = Rogue("lol", 1,1,1)
-print(rog.lvl, rog.exp_next_lvl)
-rog.lvl = 3
-print(rog.lvl, rog.exp_next_lvl)

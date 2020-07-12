@@ -15,7 +15,9 @@ def createConfig(path):
 
     config.set("Settings", "terrain", "Вы пришли в {}")
 
-    config.set("Settings", "attack", "Вас атаковал {} на {}")
+    config.set("Settings", "monster_attack", "Вас атаковал {} на {}")
+
+    config.set("Settings", "hero_attack", "Вы атаковали {} на {}")
 
     config.set("Settings", "hp", "Здоровье: {}/{} ")
 
@@ -58,9 +60,13 @@ def createConfig(path):
 def Terrain(terr):
     return (config.get("Settings",'Terrain')).format(terr)
 
-def Attack(monster,damage):
+def monster_attack(monster,damage):
 
-    return (config.get("Settings",'attack')).format(monster,damage)
+    return (config.get("Settings",'monster_attack')).format(monster,damage)
+
+def hero_attack(monster,damage):
+
+    return (config.get("Settings",'hero_attack')).format(monster,damage)
 
 def hp(now,max):
     return (config.get("Settings",'hp')).format(now,max)
