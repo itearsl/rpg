@@ -1,5 +1,5 @@
 from characters import Warrior, Mage, Rogue
-from configure_texts import hero_attack, monster_attack, attack
+from configure_texts import hero_attack, monster_attack, attack, create_hero
 import monsters
 import random
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
@@ -114,21 +114,12 @@ async def bot_cycle():
                         )
                     elif event.message.text.lower() == "!создать персонажа" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
-                        vk.messages.send(
-                            peer_id=peer_id,
-                            random_id=random.randint(1, random_number_message),
-                            message="Сейчас начнется создание персонажа, введите <ник класс сила(число) ловкость(число) интелект(число)> своего персонажа. Точно "
-                                    "так же как в примере, только без треугольных скобок. "
-                                    "У вас 7 очков чтобы распределить их на силу ловкость и интелект"
-                        )
+                        vk_message(create_hero(),peer_id)
+
                         condition[event.message.from_id] = "создание персонажа"
                     elif event.message.text.lower() == "!мой персонаж" and event.message.from_id not in condition:
                         mes_char = await db.show_character(event.message.from_id)
-                        vk.messages.send(
-                            random_id=random.randint(1, random_number_message),
-                            peer_id=event.object.message['peer_id'],
-                            message=mes_char,
-                        )
+                        vk_message(mes_char, event.object.message['peer_id'])
                     elif event.message.text.lower() == "!бой" and event.message.from_id not in condition:
                         condition[event.message.from_id] = "бой"
                         gob = monsters.Goblin("гоблин", 1)
