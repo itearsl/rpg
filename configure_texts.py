@@ -19,6 +19,8 @@ def createConfig(path):
 
     config.set("Settings", "hero_attack", "Вы атаковали {} на {}")
 
+    config.set("Settings", "attack", "На вас напал {}")
+
     config.set("Settings", "hp", "Здоровье: {}/{} ")
 
     config.set("Settings","create_hero",
@@ -67,6 +69,10 @@ def monster_attack(monster,damage):
 def hero_attack(monster,damage):
 
     return (config.get("Settings",'hero_attack')).format(monster,damage)
+
+def attack(monster):
+    return (config.get("Settings", 'attack')).format(monster)
+
 
 def hp(now,max):
     return (config.get("Settings",'hp')).format(now,max)

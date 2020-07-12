@@ -1,7 +1,8 @@
 from characters import Warrior, Mage, Rogue
-from configure_texts import hero_attack, monster_attack
+from configure_texts import hero_attack, monster_attack, attack
 import monsters
 import random
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import traceback
 import datetime
 import configparser
@@ -41,7 +42,9 @@ vk_session = VkApi(token=vkToken)
 longpoll = VkBotLongPoll(vk_session, club)
 vk = vk_session.get_api()
 upload = VkUpload(vk_session)
+fight_keyboard = VkKeyboard(one_time=False, inline = True)
 
+fight_keyboard.add_button('атака', color=VkKeyboardColor.DEFAULT)
 #init DB
 db = data_base.DB()
 
@@ -77,14 +80,20 @@ async def load_characters_f():
         characters[id_user].damage += damage
         characters[id_user].armor += armor
 
-def vk_mssage(mes, peer_id):
+def vk_message(mes, peer_id):
     vk.messages.send(
         random_id = random.randint(1, random_number_message),
         peer_id = peer_id,
         message = mes
     )
+def vk_keyboard(mes, peer_id, keyboard):
+    vk.messages.send(
+        peer_id=peer_id,
+        random_id=random.randint(1, random_number_message),
+        keyboard=keyboard.get_keyboard(),
+        message = mes
+    )
 
-gob = monsters.Goblin("гоблин", 1)
 async def bot_cycle():
     load_characters = True
     while True:
@@ -120,6 +129,10 @@ async def bot_cycle():
                             peer_id=event.object.message['peer_id'],
                             message=mes_char,
                         )
+                    elif event.message.text.lower() == "!бой" and event.message.from_id not in condition:
+                        condition[event.message.from_id] = "бой"
+                        gob = monsters.Goblin("гоблин", 1)
+                        vk_keyboard(attack(gob.name), event.object.message["peer_id"], fight_keyboard)
                     elif event.message.text.lower() == "!удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
                         vk.messages.send(
@@ -190,6 +203,7 @@ async def bot_cycle():
                             vk.messages.send(
                                 random_id=random.randint(1, random_number_message),
                                 peer_id=event.object.message['peer_id'],
+                                keyboard=fight_keyboard.get_empty_keyboard(),
                                 message="Монстр был повержен"
                             )
                             condition.pop(event.message.from_id)
@@ -198,8 +212,8 @@ async def bot_cycle():
                             if event.message.text.lower() == "атака":
                                 hero_damage = characters[event.message.from_id].attack()
                                 monster_damage = gob.attack()
-                                vk_mssage(hero_attack(gob.name, hero_damage), event.object.message['peer_id'])
-                                vk_mssage(monster_attack(gob.name, monster_damage), event.object.message['peer_id'])
+                                vk_message(hero_attack(gob.name, hero_damage), event.object.message['peer_id'])
+                                vk_message(monster_attack(gob.name, monster_damage), event.object.message['peer_id'])
                                 gob.health -= hero_damage
                                 continue
 
