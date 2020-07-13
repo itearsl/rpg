@@ -17,11 +17,17 @@ def createConfig(path):
 
     config.set("Settings", "monster_attack", "Вас атаковал {} на {}")
 
+    config.set("Settings", "monster_defeat", "{} повержен")
+
     config.set("Settings", "hero_attack", "Вы атаковали {} на {}")
 
     config.set("Settings", "attack", "На вас напал {}")
 
     config.set("Settings", "hp", "Здоровье: {}/{} ")
+
+    config.set("Settings", "delete_character", "Ваш персонаж успешно удален")
+
+    config.set("Settings", "error", "Ошибка")
 
     config.set("Settings", "help",
 '''
@@ -72,8 +78,10 @@ def Terrain(terr):
     return (config.get("Settings", 'Terrain')).format(terr)
 
 def monster_attack(monster,damage):
-
     return (config.get("Settings", 'monster_attack')).format(monster,damage)
+
+def monster_defeat(monster):
+    return (config.get("Settings", "monster_defeat")).format(monster)
 
 def hero_attack(monster,damage):
 
@@ -90,6 +98,8 @@ def hp(now,max):
 def create_hero():
     return config.get("Settings", 'create_hero')
 
+def delete_character():
+    return config.get("Settings", "delete_character")
 
 def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
     return (config.get("Settings", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
@@ -97,6 +107,9 @@ def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agilit
 
 def help():
     return config.get("Settings", "help")
+
+def error():
+    return config.get("Settings", "error")
 
 
 createConfig(path)
