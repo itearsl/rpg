@@ -50,8 +50,6 @@ fight_keyboard.add_button('атака', color=VkKeyboardColor.DEFAULT)
 #init DB
 db = data_base.DB()
 
-
-
 async def load_characters_f():
 
     """Все равно пока говно, я подумаю как сделать лучше"""
@@ -106,7 +104,6 @@ async def bot_cycle():
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
-                        condition[event.message.from_id] = "бой"
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
                     elif event.message.text.lower() == "!создать персонажа" and event.message.from_id not in condition:
@@ -140,16 +137,7 @@ async def bot_cycle():
                             condition.pop(event.message.from_id, event.object.message["peer_id"])
                             continue
                         char = event.message.text.split(" ")
-                        if char[1].lower() == 'воин':
-                            characters[event.message.from_id] = Warrior(char[0], int(char[2]), int(char[3]), int(char[4]))
-                        elif char[1].lower() == 'маг':
-                            characters[event.message.from_id] = Mage(char[0], int(char[2]), int(char[3]), int(char[4]))
-                        elif char[1].lower() == 'разбойник':
-                            characters[event.message.from_id] = Rogue(char[0], int(char[2]), int(char[3]), int(char[4]))
-                        else:
-                            vk_message("Такого класса нет в игре", event.object.message["peer_id"])
-                            condition.pop(event.message.from_id)
-                            continue
+                        characters[event.message.from_id] = globals()[char[1]](char[0], int(char[2]), int(char[3]), int(char[4]))
                         mes = await db.create_character(characters[event.message.from_id], event.message.from_id)
                         vk_message(mes, event.object.message["peer_id"])
                         condition.pop(event.message.from_id)
