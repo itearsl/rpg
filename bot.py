@@ -26,9 +26,12 @@ random_number_message = 10 ** 100
 
 
 db_len = 14
+#Монстры персонажей
+mobs = {
+}
+
 #Персонажи
 characters={
-
 }
 
 # Состояния
@@ -116,8 +119,8 @@ async def bot_cycle():
                         vk_message(mes_char, event.object.message['peer_id'])
                     elif event.message.text.lower() == "!бой" and event.message.from_id not in condition:
                         condition[event.message.from_id] = "бой"
-                        gob = monsters.Goblin("гоблин", 1)
-                        vk_message(attack(gob.name), event.object.message["peer_id"], fight_keyboard)
+                        mobs[event.message.from_id] = monsters.Goblin("гоблин", 1)
+                        vk_message(attack(mobs[event.message.from_id].name), event.object.message["peer_id"], fight_keyboard)
                     elif event.message.text.lower() == "!удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
                         vk_message(del_message, event.object.message["peer_id"])
@@ -159,17 +162,18 @@ async def bot_cycle():
                             message="Предмет добавлен",
                         )
                     elif event.message.from_id in condition and condition[event.message.from_id] == "бой":
-                        if gob.health <= 0:
-                            vk_message(configure_texts.monster_defeat(gob.name), event.object.message["peer_id"])
+                        if mobs[event.message.from_id].health <= 0:
+                            vk_message(configure_texts.monster_defeat(mobs[event.message.from_id].name), event.object.message["peer_id"])
                             condition.pop(event.message.from_id)
                             continue
                         else:
                             if event.message.text.lower() == "атака":
                                 hero_damage = characters[event.message.from_id].attack()
-                                monster_damage = gob.attack()
-                                vk_message(hero_attack(gob.name, hero_damage), event.object.message['peer_id'])
-                                vk_message(monster_attack(gob.name, monster_damage), event.object.message['peer_id'], fight_keyboard)
-                                gob.health -= hero_damage
+                                monster_damage = mobs[event.message.from_id].attack()
+                                vk_message(hero_attack(mobs[event.message.from_id].name, hero_damage), event.object.message['peer_id'])
+                                vk_message(monster_attack(mobs[event.message.from_id].name, monster_damage), event.object.message['peer_id'], fight_keyboard)
+                                mobs[event.message.from_id].health -= hero_damage
+
                                 continue
 
 
