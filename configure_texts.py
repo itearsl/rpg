@@ -23,6 +23,15 @@ def createConfig(path):
 
     config.set("Settings", "hp", "Здоровье: {}/{} ")
 
+    config.set("Settings", "help",
+'''
+Команды:
+&#128313; !Создать персонажа
+&#128313; !Мой персонаж
+&#128313; !Удалить персонажа
+&#128313; !бой (для теста)      
+''')
+
     config.set("Settings","create_hero",
 """     
 &#128312; Создание персонажа.
@@ -30,10 +39,8 @@ def createConfig(path):
 
 &#128313; Ник
 &#128313; Класс
-&#128313; Характеристики, Вам доступно 7
-
-Например:
-Divinity воин 4 2 1
+&#128313; Характеристики, доступно 7, вводите через кнопки.
+КНОПКИ: СИЛА ЛОВКОСТЬ ИНТЕЛЛЕКТ
 """)
 
     config.set("Settings","characteristics",
@@ -62,32 +69,34 @@ Divinity воин 4 2 1
 
 
 def Terrain(terr):
-    return (config.get("Settings",'Terrain')).format(terr)
+    return (config.get("Settings", 'Terrain')).format(terr)
 
 def monster_attack(monster,damage):
 
-    return (config.get("Settings",'monster_attack')).format(monster,damage)
+    return (config.get("Settings", 'monster_attack')).format(monster,damage)
 
 def hero_attack(monster,damage):
 
-    return (config.get("Settings",'hero_attack')).format(monster,damage)
+    return (config.get("Settings", 'hero_attack')).format(monster,damage)
 
 def attack(monster):
     return (config.get("Settings", 'attack')).format(monster)
 
 
 def hp(now,max):
-    return (config.get("Settings",'hp')).format(now,max)
+    return (config.get("Settings", 'hp')).format(now,max)
 
 
 def create_hero():
-    return config.get("Settings",'create_hero')
+    return config.get("Settings", 'create_hero')
 
 
 def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
     return (config.get("Settings", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
                                                             weapon, head, body, hands, legs)
 
+def help():
+    return config.get("Settings", "help")
 
 
 createConfig(path)

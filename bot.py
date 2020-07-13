@@ -1,5 +1,6 @@
 from characters import Warrior, Mage, Rogue
-from configure_texts import hero_attack, monster_attack, attack, create_hero
+from configure_texts import hero_attack, monster_attack, attack
+import configure_texts
 import monsters
 import random
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
@@ -9,6 +10,7 @@ import configparser
 from vk_api import VkApi
 from vk_api.upload import VkUpload
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.utils import get_random_id
 import data_base
 import asyncio
 
@@ -82,14 +84,14 @@ async def load_characters_f():
 
 def vk_message(mes, peer_id):
     vk.messages.send(
-        random_id = random.randint(1, random_number_message),
+        random_id = get_random_id(),
         peer_id = peer_id,
         message = mes
     )
 def vk_keyboard(mes, peer_id, keyboard):
     vk.messages.send(
         peer_id=peer_id,
-        random_id=random.randint(1, random_number_message),
+        random_id=get_random_id(),
         keyboard=keyboard.get_keyboard(),
         message = mes
     )
@@ -106,16 +108,10 @@ async def bot_cycle():
                     if event.message.text.lower() == "!help" and event.message.from_id not in condition:
                         condition[event.message.from_id] = "бой"
                         peer_id = event.object.message['peer_id']
-                        vk.messages.send(
-                            random_id=random.randint(1, random_number_message),
-                            peer_id=peer_id,
-                            message="Команды:\n"
-                                    "🔹 !Создать персонажа"
-                        )
+                        vk_message(configure_texts.help(), peer_id)
                     elif event.message.text.lower() == "!создать персонажа" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
-                        vk_message(create_hero(),peer_id)
-
+                        vk_message(configure_texts.create_hero(), peer_id)
                         condition[event.message.from_id] = "создание персонажа"
                     elif event.message.text.lower() == "!мой персонаж" and event.message.from_id not in condition:
                         mes_char = await db.show_character(event.message.from_id)
@@ -126,11 +122,7 @@ async def bot_cycle():
                         vk_keyboard(attack(gob.name), event.object.message["peer_id"], fight_keyboard)
                     elif event.message.text.lower() == "!удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
-                        vk.messages.send(
-                            random_id = random.randint(1, random_number_message),
-                            peer_id = event.object.message["peer_id"],
-                            message = del_message,
-                        )
+                        vk_message(del_message, event.object.message["peer_id"])
                     elif event.message.text.lower() == "!предметы" and event.message.from_id not in condition and (event.message.from_id == 176803261 or event.message.from_id == admin):
                         vk.messages.send(
                             random_id=random.randint(1, random_number_message),
@@ -144,12 +136,8 @@ async def bot_cycle():
                     # проверка состояний
                     elif event.message.from_id in condition and condition[event.message.from_id] == "создание персонажа":
                         if event.message.text.lower() == "!выход":
-                            vk.messages.send(
-                                random_id=random.randint(1, random_number_message),
-                                peer_id=event.object.message['peer_id'],
-                                message="Жаль что мы не поиграем",
-                            )
-                            condition.pop(event.message.from_id)
+                            vk_message("Жаль что мы не поиграем", event.object.message["peer_id"])
+                            condition.pop(event.message.from_id, event.object.message["peer_id"])
                             continue
                         char = event.message.text.split(" ")
                         if char[1].lower() == 'воин':
@@ -159,19 +147,11 @@ async def bot_cycle():
                         elif char[1].lower() == 'разбойник':
                             characters[event.message.from_id] = Rogue(char[0], int(char[2]), int(char[3]), int(char[4]))
                         else:
-                            vk.messages.send(
-                                random_id=random.randint(1, random_number_message),
-                                peer_id=event.object.message['peer_id'],
-                                message="такого класса нет в игре",
-                            )
+                            vk_message("Такого класса нет в игре", event.object.message["peer_id"])
                             condition.pop(event.message.from_id)
                             continue
                         mes = await db.create_character(characters[event.message.from_id], event.message.from_id)
-                        vk.messages.send(
-                            random_id=random.randint(1, random_number_message),
-                            peer_id=event.object.message['peer_id'],
-                            message=mes,
-                        )
+                        vk_message(mes, event.object.message["peer_id"])
                         condition.pop(event.message.from_id)
                     elif event.message.from_id in condition and condition[event.message.from_id] == "предметы":
                         if event.message.text.lower() == "!выход":
@@ -191,12 +171,7 @@ async def bot_cycle():
                         )
                     elif event.message.from_id in condition and condition[event.message.from_id] == "бой":
                         if gob.health <= 0:
-                            vk.messages.send(
-                                random_id=random.randint(1, random_number_message),
-                                peer_id=event.object.message['peer_id'],
-                                keyboard=fight_keyboard.get_empty_keyboard(),
-                                message="Монстр был повержен"
-                            )
+                            vk_message("Монстр был повержен", event.object.message["peer_id"])
                             condition.pop(event.message.from_id)
                             continue
                         else:
@@ -204,7 +179,7 @@ async def bot_cycle():
                                 hero_damage = characters[event.message.from_id].attack()
                                 monster_damage = gob.attack()
                                 vk_message(hero_attack(gob.name, hero_damage), event.object.message['peer_id'])
-                                vk_message(monster_attack(gob.name, monster_damage), event.object.message['peer_id'])
+                                vk_keyboard(monster_attack(gob.name, monster_damage), event.object.message['peer_id'], fight_keyboard)
                                 gob.health -= hero_damage
                                 continue
 
