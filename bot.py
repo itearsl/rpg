@@ -13,18 +13,24 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.utils import get_random_id
 import data_base
 import asyncio
+import logging
 
 path = "config.ini"
 config = configparser.ConfigParser()
-config.read(path)
+config.read(path) # Path
 
 vkToken = config.get("Config",'vkToken')
 admin = config.get("Config",'admin')
 club = config.get("Config",'club')
 
 
+
 db_len = 14
 #Персонажи
+
+#  Init logging config
+logging.basicConfig(level=logging.DEBUG, filename='logfile.log', format='%(asctime)s in function: %(funcName)s %(levelname)s:%(message)s ')
+
 characters={
 }
 
@@ -49,7 +55,12 @@ fight_keyboard = VkKeyboard(one_time=False, inline = True)
 
 fight_keyboard.add_button('атака', color=VkKeyboardColor.DEFAULT)
 #init DB
-db = data_base.DB()
+try:
+    db = data_base.DB()
+except:
+    print("Error with connect to database")
+    logging.error("Critical error with connect to database")
+    exit(1)
 async def load_characters_f():
 
     """Все равно пока говно, я подумаю как сделать лучше"""
@@ -58,7 +69,8 @@ async def load_characters_f():
     for character in chars:
         id_user = character[0]
         if len(character) != db_len:
-            print("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))  #WRITE TO LOG TOO!!!!
+            logging.error("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
+            print("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
             continue
         characters[id_user] = globals()[character[8]](character[1], int(character[5]), int(character[6]), int(character[7]))
         characters[id_user].strength = int(character[5])
@@ -110,12 +122,13 @@ def check_characters(message):
 async def bot_cycle():
     load_characters = True
     while True:
-        # try:
+        try:
             if load_characters:
                 load_characters = False
                 await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
+                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.tex))
                     if event.message.text.lower() == "help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
@@ -197,15 +210,11 @@ async def bot_cycle():
 
 
 
-        # except Exception as err:
-        #     with open("err_log.txt", "a") as log:
-        #         log.write("{} {}\n\n".format(traceback.format_exc(), str(datetime.datetime.now())))
-        #     vk.messages.send(
-        #         random_id=random.randint(1,10**90),
-        #         peer_id=admin,
-        #         message="Вылет",
-        #     )
-        #     condition = {}
+        except Exception as err:
+
+            logging.error("Critical error", exc_info=True)
+            vk_message(admin, "Мы получили критическую ошибку, запись в логе")
+            condition = {}
 
 
 async def main():
