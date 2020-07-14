@@ -14,6 +14,8 @@ from vk_api.utils import get_random_id
 import data_base
 import asyncio
 
+# kukulilia
+
 path = "config.ini"
 config = configparser.ConfigParser()
 config.read(path)
