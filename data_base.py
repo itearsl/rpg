@@ -44,7 +44,6 @@ class DB():
                                                   char[5], char[6],
                                                   char[7], char[8], char[9], char[10], char[11])
         return message
-
     async def load_characters(self):
         self.cur.execute("select characters.id, characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence, characters.class, "
@@ -54,7 +53,10 @@ class DB():
                          )
         chars = self.cur.fetchall()
         return chars
-
+    async def get_monster(self):
+        self.cur.execute("select monster from monsters order by rand() limit 1")
+        monster = self.cur.fetchone()
+        return monster
     async def delete_character(self, id):
         try:
             self.cur.execute("delete from characters where id = %s", (id))
