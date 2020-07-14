@@ -22,8 +22,6 @@ vkToken = config.get("Config",'vkToken')
 admin = config.get("Config",'admin')
 club = config.get("Config",'club')
 
-random_number_message = 10 ** 100  # remove
-
 
 db_len = 14
 #Персонажи
