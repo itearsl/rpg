@@ -1,0 +1,3 @@
+2020-07-14 17:18:00,777 in function: _new_conn DEBUG:Starting new HTTPS connection (1): api.vk.com:443 
+2020-07-14 17:18:00,883 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/groups.getLongPollServer HTTP/1.1" 200 125 
+2020-07-14 17:18:04,901 in function: <module> ERROR:Critical error with connect to database 

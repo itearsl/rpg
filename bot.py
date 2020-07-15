@@ -51,7 +51,7 @@ vk_session = VkApi(token=vkToken)
 longpoll = VkBotLongPoll(vk_session, club)
 vk = vk_session.get_api()
 upload = VkUpload(vk_session)
-fight_keyboard = VkKeyboard(one_time=False, inline = True)
+fight_keyboard = VkKeyboard(one_time=False, inline=True)
 
 fight_keyboard.add_button('атака', color=VkKeyboardColor.DEFAULT)
 #init DB
@@ -120,6 +120,7 @@ def check_characters(message):
 
 
 async def bot_cycle():
+    global condition
     load_characters = True
     while True:
         try:
@@ -128,7 +129,7 @@ async def bot_cycle():
                 await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.tex))
+                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
                     if event.message.text.lower() == "help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
@@ -149,7 +150,7 @@ async def bot_cycle():
                         vk_message(del_message, event.object.message["peer_id"])
                     elif event.message.text.lower() == "предметы" and event.message.from_id not in condition and (event.message.from_id == 176803261 or event.message.from_id == admin):
                         vk.messages.send(
-                            random_id=random.randint(1, random_number_message),
+                            random_id=random.randint(1, get_random_id()),
                             peer_id=event.object.message['peer_id'],
                             message="можешь начинать(!выход для остановки). Вводи в таком вормате:"
                                     "<название lvl тип(оружие/броня) значение(урон/защита)>\n"
@@ -213,7 +214,7 @@ async def bot_cycle():
         except Exception as err:
 
             logging.error("Critical error", exc_info=True)
-            vk_message(admin, "Мы получили критическую ошибку, запись в логе")
+            vk_message("Мы получили критическую ошибку, запись в логе", admin)
             condition = {}
 
 
