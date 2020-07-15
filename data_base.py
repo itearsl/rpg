@@ -8,10 +8,9 @@ class DB():
     def __init__(self):
         self.conn = pymysql.connect(host='localhost',
                     user='root',
-                    passwd='qwe13245',
+                    passwd='asasen2000ivan',
                     db='rpg',
-                    charset="utf8",
-                    port=3528)
+                    charset="utf8")
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
     async def create_character(self, character, id):
@@ -32,17 +31,17 @@ class DB():
         #     message = configure_texts.error()
         #     return message
     async def show_character(self, id):
-        self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
+        self.cur.execute("select characters.class, characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
                          "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
                          "from characters "
                          "join inventory on characters.inventory = inventory.player_id "
-                         "where id = %s", (id))
+                         "where id = %s", (id))  # добавил characters.class
         char = self.cur.fetchone()
-        message = configure_texts.characteristics(char[0], char[1], char[2],
-                                                  char[3], char[4],
-                                                  char[5], char[6],
-                                                  char[7], char[8], char[9], char[10], char[11])
+        message = configure_texts.characteristics(char[0], char[1], char[2], char[3],
+                                                  char[4], char[5],
+                                                  char[6], char[7],
+                                                  char[8], char[9], char[10], char[11], char[12])  # добавил еще char
         return message
     async def load_characters(self):
         self.cur.execute("select characters.id, characters.name, characters.exp, characters.exp_next_lvl, "

@@ -19,9 +19,15 @@ def createConfig(path):
 
     config.set("Settings", "monster_defeat", "{} повержен")
 
+    config.set("Settings", "hero_defeat", "Вы погибли") # смерть героя
+
     config.set("Settings", "hero_attack", "Вы атаковали {} на {}")
 
     config.set("Settings", "attack", "На вас напал {}")
+
+    config.set("Settings", "hero_hp", "У вас осталось {} hp") # добавил хп героя после атаки
+
+    config.set("Settings", "monster_hp", "У {} осталось {} hp")  # добавил хп моба после атаки
 
     config.set("Settings", "hp", "Здоровье: {}/{} ")
 
@@ -54,6 +60,7 @@ def createConfig(path):
 """
 &#128312; Ваш персонаж:
 
+&#128313; Класс персонажа: {}
 &#128313; Имя: {}
 &#128313; Опыт: {}
 &#128313; Опыт для лвл апа: {}
@@ -69,7 +76,7 @@ def createConfig(path):
 &#128085; Тело: {} броня
 &#129508; Руки: {} броня
 &#128094; Ноги: {} броня
-""")
+""") # добавил класс персонажа
     #config.set("Config","")
     with open(path, "w") as config_file:
         config.write(config_file)
@@ -84,9 +91,24 @@ def monster_attack(monster,damage):
 def monster_defeat(monster):
     return (config.get("Settings", "monster_defeat")).format(monster)
 
+
+def hero_defeat():
+    return config.get("Settings", "hero_defeat")
+
+
 def hero_attack(monster,damage):
 
     return (config.get("Settings", 'hero_attack')).format(monster,damage)
+
+
+def monster_hp(monster, monster_hp):
+
+    return (config.get("Settings", 'monster_hp')).format(monster, monster_hp)  # Оставшееся хп монстра
+
+
+def hero_hp(hero_hp):
+
+    return (config.get("Settings", 'hero_hp')).format(hero_hp)  # Оставшееся хп героя
 
 def attack(monster):
     return (config.get("Settings", 'attack')).format(monster)
@@ -102,9 +124,9 @@ def create_hero():
 def delete_character():
     return config.get("Settings", "delete_character")
 
-def characteristics(nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
-    return (config.get("Settings", 'characteristics')).format(nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
-                                                            weapon, head, body, hands, legs)
+def characteristics(person_class, nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
+    return (config.get("Settings", 'characteristics')).format(person_class, nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
+                                                            weapon, head, body, hands, legs) # добавил person_class
 
 def help():
     return config.get("Settings", "help")
