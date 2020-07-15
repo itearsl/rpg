@@ -1,5 +1,5 @@
 from characters import Warrior, Mage, Rogue
-from configure_texts import hero_attack, monster_attack, attack
+from configure_texts import hero_attack, monster_attack, attack, monster_hp, hero_hp, hero_defeat # импортировал monster_hp, hero_hp, hero_defeat
 import configure_texts
 from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
 import random
@@ -196,20 +196,35 @@ async def bot_cycle():
                             message="Предмет добавлен",
                         )
                     elif event.message.from_id in condition and condition[event.message.from_id] == "бой":
-                        if mobs[event.message.from_id].health <= 0:
-                            vk_message(configure_texts.monster_defeat(mobs[event.message.from_id].name), event.object.message["peer_id"])
-                            condition.pop(event.message.from_id)
-                            continue
-                        else:
-                            if event.message.text.lower() == "атака":
-                                hero_damage = characters[event.message.from_id].attack()
-                                monster_damage = mobs[event.message.from_id].attack()
-                                vk_message(hero_attack(mobs[event.message.from_id].name, hero_damage), event.object.message['peer_id'])
-                                vk_message(monster_attack(mobs[event.message.from_id].name, monster_damage), event.object.message['peer_id'], fight_keyboard)
-                                mobs[event.message.from_id].health -= hero_damage
+                        if event.message.text.lower() == "атака":
+                            hero_damage = characters[event.message.from_id].attack()    # Урон героя
+                            monster_damage = mobs[event.message.from_id].attack()   # Урон монстра
+                            mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
+                            characters[
+                                event.message.from_id].health -= monster_damage  # Вычитает из хп героя урон от моба
+                            vk_message(hero_attack(mobs[event.message.from_id].name, hero_damage),
+                                       event.object.message['peer_id'])  # Отправляет сколько и кому нанес урон герой
+                            if mobs[event.message.from_id].health <= 0:
+                                vk_message(configure_texts.monster_defeat(mobs[event.message.from_id].name),
+                                           event.object.message["peer_id"])
+                                condition.pop(event.message.from_id)
                                 continue
-
-
+                            else:
+                                vk_message(
+                                    monster_hp(mobs[event.message.from_id].name, mobs[event.message.from_id].health),
+                                    event.object.message['peer_id'])  # Отправляет сколько хп осталось у моба
+                                vk_message(monster_attack(mobs[event.message.from_id].name, monster_damage),
+                                           event.object.message[
+                                               'peer_id'])  # Отправляет какой моб и сколько урона нанёс урона герою
+                                if characters[event.message.from_id].health <= 0:
+                                    vk_message(configure_texts.hero_defeat(), event.object.message["peer_id"])
+                                    condition.pop(event.message.from_id)
+                                    continue
+                                else:
+                                    vk_message(hero_hp(characters[event.message.from_id].health),
+                                               event.object.message['peer_id'],
+                                               fight_keyboard)  # Отправляет сколько хп осталось у персонажа
+                                    continue
 
         except Exception as err:
 
