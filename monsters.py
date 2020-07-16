@@ -3,7 +3,8 @@ import random
 class Monster():
     def __init__(self, lvl):
         self.lvl = lvl or 1
-        self.health = 15 + 2*self.lvl
+        # self.health = 15 + 2*self.lvl
+        # self.max_health = 15 + 2*self.lvl         Я НЕ УВЕРЕН ЧТО ЭТИ СТРОКИ НУЖНЫ,
         self.damage = 5
         self.armor = 0
         self.evasion_modify = 0.03
@@ -24,6 +25,7 @@ class Goblin(Monster):
         self.name = "Гоблин"
         self.damage = 1 + self.lvl*2
         self.health = 13 + self.lvl*2
+        self.max_health = 13 + self.lvl * 2
 
 
 class Skeleton(Monster):
@@ -32,6 +34,7 @@ class Skeleton(Monster):
         self.name = "Скелет"
         self.damage = 2 + self.lvl*2
         self.health = 15 + self.lvl*2
+        self.max_health = 15 + self.lvl * 2
 
 class Grog(Monster):
     def __init__(self, name, lvl):
@@ -39,6 +42,7 @@ class Grog(Monster):
         self.name = "Грог"
         self.damage = 5 + self.lvl*2
         self.health = 23 + self.lvl*2
+        self.max_health = 23 + self.lvl * 2
 
 class King_fire_slug(Monster):
     def __init__(self, lvl):
@@ -46,6 +50,7 @@ class King_fire_slug(Monster):
         self.name = "Огненная королевская слизь"
         self.damage = 8 + self.lvl*2
         self.health = 28 + self.lvl*2
+        self.max_health = 28 + self.lvl * 2
 
 class Vile_fiend(Monster):
     def __init__(self, lvl):
@@ -53,10 +58,11 @@ class Vile_fiend(Monster):
         self.name = "Мерзкое исчадие ада"
         self.damage = 6 + self.lvl*2
         self.health = 21 + self.lvl*2
+        self.max_health = 21 + self.lvl * 2
 
 class Troll(Monster):
     def __init__(self, lvl):
         super().__init__(lvl)
         self.name = "Троль"
         self.damage = 13 + self.lvl*2
-        self.health = 38 + self.lvl*2
+        self.max_health = 13 + self.lvl*2

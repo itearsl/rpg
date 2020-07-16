@@ -620,3 +620,66 @@ TypeError: __init__() missing 1 required positional argument: 'lvl'
 2020-07-15 17:36:40,710 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
 2020-07-15 17:36:40,731 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=57abe543318abb86cbc909e53bb1609152ec390a&ts=32860&wait=25 HTTP/1.1" 200 1529 
 2020-07-15 17:37:05,751 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=57abe543318abb86cbc909e53bb1609152ec390a&ts=32864&wait=25 HTTP/1.1" 200 29 
+2020-07-16 17:22:07,225 in function: _new_conn DEBUG:Starting new HTTPS connection (1): api.vk.com:443 
+2020-07-16 17:22:07,364 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/groups.getLongPollServer HTTP/1.1" 200 124 
+2020-07-16 17:22:07,811 in function: __init__ DEBUG:Using proactor: IocpProactor 
+2020-07-16 17:22:07,829 in function: _new_conn DEBUG:Starting new HTTPS connection (1): lp.vk.com:443 
+2020-07-16 17:22:16,431 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32949&wait=25 HTTP/1.1" 200 202 
+2020-07-16 17:22:20,768 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32950&wait=25 HTTP/1.1" 200 525 
+2020-07-16 17:22:20,768 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: мой персонаж 
+2020-07-16 17:22:20,886 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:20,906 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32951&wait=25 HTTP/1.1" 200 852 
+2020-07-16 17:22:23,776 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32952&wait=25 HTTP/1.1" 200 202 
+2020-07-16 17:22:24,328 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32953&wait=25 HTTP/1.1" 200 508 
+2020-07-16 17:22:24,328 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: бой 
+2020-07-16 17:22:24,330 in function: bot_cycle ERROR:Critical error 
+Traceback (most recent call last):
+  File "C:/Users/Nani/PycharmProjects/rpg/bot.py", line 146, in bot_cycle
+    mobs[event.message.from_id] = globals()[mob[0]](characters[event.message.from_id].lvl)
+TypeError: __init__() missing 1 required positional argument: 'lvl'
+2020-07-16 17:22:24,477 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:24,498 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32954&wait=25 HTTP/1.1" 200 434 
+2020-07-16 17:22:29,929 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32955&wait=25 HTTP/1.1" 200 202 
+2020-07-16 17:22:30,581 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32956&wait=25 HTTP/1.1" 200 508 
+2020-07-16 17:22:30,582 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: бой 
+2020-07-16 17:22:30,697 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:30,717 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32957&wait=25 HTTP/1.1" 200 408 
+2020-07-16 17:22:55,736 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32958&wait=25 HTTP/1.1" 200 29 
+2020-07-16 17:22:57,300 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32958&wait=25 HTTP/1.1" 200 512 
+2020-07-16 17:22:57,300 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: атака 
+2020-07-16 17:22:57,421 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:57,904 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:58,368 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:58,829 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:22:58,850 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32959&wait=25 HTTP/1.1" 200 1547 
+2020-07-16 17:23:04,991 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32963&wait=25 HTTP/1.1" 200 512 
+2020-07-16 17:23:04,992 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: атака 
+2020-07-16 17:23:05,118 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:23:05,559 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:23:05,580 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=b8bee34e92269a33f40e4e641192f2d6f484d522&ts=32964&wait=25 HTTP/1.1" 200 793 
+2020-07-16 17:30:40,643 in function: _new_conn DEBUG:Starting new HTTPS connection (1): api.vk.com:443 
+2020-07-16 17:30:40,738 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/groups.getLongPollServer HTTP/1.1" 200 123 
+2020-07-16 17:30:40,740 in function: __init__ DEBUG:Using proactor: IocpProactor 
+2020-07-16 17:30:40,743 in function: _new_conn DEBUG:Starting new HTTPS connection (1): lp.vk.com:443 
+2020-07-16 17:30:53,378 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32989&wait=25 HTTP/1.1" 200 202 
+2020-07-16 17:30:55,806 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32990&wait=25 HTTP/1.1" 200 525 
+2020-07-16 17:30:55,807 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: мой персонаж 
+2020-07-16 17:30:55,924 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:30:55,945 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32991&wait=25 HTTP/1.1" 200 852 
+2020-07-16 17:31:08,841 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32992&wait=25 HTTP/1.1" 200 202 
+2020-07-16 17:31:09,522 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32993&wait=25 HTTP/1.1" 200 508 
+2020-07-16 17:31:09,523 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: бой 
+2020-07-16 17:31:09,632 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:09,653 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32994&wait=25 HTTP/1.1" 200 409 
+2020-07-16 17:31:11,313 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32995&wait=25 HTTP/1.1" 200 512 
+2020-07-16 17:31:11,314 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: атака 
+2020-07-16 17:31:11,455 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:11,928 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:12,392 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:12,849 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:12,869 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=32996&wait=25 HTTP/1.1" 200 1544 
+2020-07-16 17:31:17,780 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=33000&wait=25 HTTP/1.1" 200 512 
+2020-07-16 17:31:17,780 in function: bot_cycle DEBUG:We got new message from: 137516299. Text message: атака 
+2020-07-16 17:31:17,892 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:18,356 in function: _make_request DEBUG:https://api.vk.com:443 "POST /method/messages.send HTTP/1.1" 200 37 
+2020-07-16 17:31:18,376 in function: _make_request DEBUG:https://lp.vk.com:443 "GET /wh194548161?act=a_check&key=406665906be02800ce6ae9989e6e3e3be0618121&ts=33001&wait=25 HTTP/1.1" 200 794 
