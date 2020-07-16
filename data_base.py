@@ -1,16 +1,28 @@
 import asyncio
 import random
+import configparser
 import pymysql
 import configure_texts
+
+path = "config.ini"
+config = configparser.ConfigParser()
+config.read(path) # Path
+
+host_bd = config.get("Config", "host")
+user_bd = config.get("Config", "user")
+passwd_bd = config.get("Config", "passwd")
+db_bd = config.get("Config", "db")
+charset_bd = config.get("Config", "charset")
+
 
 # Класс для управления БД
 class DB():
     def __init__(self):
-        self.conn = pymysql.connect(host='localhost',
-                    user='root',
-                    passwd='asasen2000ivan',
-                    db='rpg',
-                    charset="utf8")
+        self.conn = pymysql.connect(host=host_bd,
+                    user=user_bd,
+                    passwd=passwd_bd,
+                    db=db_bd,
+                    charset=charset_bd)
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
     async def create_character(self, character, id):

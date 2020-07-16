@@ -29,9 +29,10 @@ db_len = 14
 #Персонажи
 
 #  Init logging config
-logging.basicConfig(level=logging.DEBUG, filename='logfile.log', format='%(asctime)s in function: %(funcName)s %(levelname)s:%(message)s ')
+logging.basicConfig(level=logging.WARNING, filename='logfile.log', format='%(asctime)s in function: %(funcName)s %(levelname)s:%(message)s ')
+logging = logging.getLogger(__name__)
 
-characters={
+characters = {
 }
 
 #Тут храняться монстры для каждого игрока
@@ -69,7 +70,7 @@ async def load_characters_f():
     for character in chars:
         id_user = character[0]
         if len(character) != db_len:
-            logging.error("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
+            logging.warning("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
             print("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
             continue
         characters[id_user] = globals()[character[8]](character[1], int(character[5]), int(character[6]), int(character[7]))
@@ -129,7 +130,7 @@ async def bot_cycle():
                 await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
+                    logging.warning("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
                     if event.message.text.lower() == "help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
