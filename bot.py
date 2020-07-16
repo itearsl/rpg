@@ -1,6 +1,7 @@
 from characters import Warrior, Mage, Rogue
 from configure_texts import hero_attack, monster_attack, attack, monster_hp, hero_hp, hero_defeat # импортировал monster_hp, hero_hp, hero_defeat
 import configure_texts
+import keyboards
 from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
 import random
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
@@ -29,10 +30,9 @@ db_len = 14
 #Персонажи
 
 #  Init logging config
-logging.basicConfig(level=logging.WARNING, filename='logfile.log', format='%(asctime)s in function: %(funcName)s %(levelname)s:%(message)s ')
-logging = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, filename='logfile.log', format='%(asctime)s in function: %(funcName)s %(levelname)s:%(message)s ')
 
-characters = {
+characters={
 }
 
 #Тут храняться монстры для каждого игрока
@@ -43,8 +43,8 @@ mobs = {
 state = {
 }
 
-condition = {
-}
+global condition
+condition = {}
 
 
 # Init vk_api
@@ -62,6 +62,9 @@ except:
     print("Error with connect to database")
     logging.error("Critical error with connect to database")
     exit(1)
+
+#init keyboads class
+kb = keyboards.KB()
 async def load_characters_f():
 
     """Все равно пока говно, я подумаю как сделать лучше"""
@@ -70,7 +73,7 @@ async def load_characters_f():
     for character in chars:
         id_user = character[0]
         if len(character) != db_len:
-            logging.warning("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
+            logging.error("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
             print("Error, we have {} elements at database, but normal result {}".format(len(character), db_len))
             continue
         characters[id_user] = globals()[character[8]](character[1], int(character[5]), int(character[6]), int(character[7]))
@@ -124,13 +127,13 @@ async def bot_cycle():
     global condition
     load_characters = True
     while True:
-        try:
+        # try:
             if load_characters:
                 load_characters = False
                 await load_characters_f()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    logging.warning("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
+                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
                     if event.message.text.lower() == "help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
@@ -149,16 +152,11 @@ async def bot_cycle():
                     elif event.message.text.lower() == "удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
                         vk_message(del_message, event.object.message["peer_id"])
-                    elif event.message.text.lower() == "предметы" and event.message.from_id not in condition and (event.message.from_id == 176803261 or event.message.from_id == admin):
-                        vk.messages.send(
-                            random_id=random.randint(1, get_random_id()),
-                            peer_id=event.object.message['peer_id'],
-                            message="можешь начинать(!выход для остановки). Вводи в таком вормате:"
-                                    "<название lvl тип(оружие/броня) значение(урон/защита)>\n"
-                                    "Пример: меч 2 оружие 3\n"
-                                    "надеюсь ты понял",
-                        )
-                        condition[event.message.from_id] = "предметы"
+                    elif event.message.text.lower() == "путешествие" and event.message.from_id not in condition:
+                        condition[event.message.from_id] = "путешествие"
+                        locations = await db.get_locations()
+                        tr_keyboard = await kb.travel_keyboard(locations)
+                        vk_message("Куда вы хотите отправиться?", event.object.message["peer_id"], tr_keyboard)
                     # проверка состояний
                     elif event.message.from_id in condition and condition[event.message.from_id] == "создание персонажа":
                         if event.message.text.lower() == "выход":
@@ -201,8 +199,7 @@ async def bot_cycle():
                             hero_damage = characters[event.message.from_id].attack()    # Урон героя
                             monster_damage = mobs[event.message.from_id].attack()   # Урон монстра
                             mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
-                            characters[
-                                event.message.from_id].health -= monster_damage  # Вычитает из хп героя урон от моба
+                            characters[event.message.from_id].health -= monster_damage  # Вычитает из хп героя урон от моба
                             vk_message(hero_attack(mobs[event.message.from_id].name, hero_damage),
                                        event.object.message['peer_id'])  # Отправляет сколько и кому нанес урон герой
                             if mobs[event.message.from_id].health <= 0:
@@ -226,12 +223,16 @@ async def bot_cycle():
                                                event.object.message['peer_id'],
                                                fight_keyboard)  # Отправляет сколько хп осталось у персонажа
                                     continue
+                    elif event.message.from_id in condition and condition[event.message.from_id] == "путешествие":
+                        desc = await db.get_desc(event.message.text)
+                        vk_message(desc, event.object.message["peer_id"])
+                        condition.pop(event.message.from_id)
 
-        except Exception as err:
-
-            logging.error("Critical error", exc_info=True)
-            vk_message("Мы получили критическую ошибку, запись в логе", admin)
-            condition = {}
+        # except Exception as err:
+        #
+        #     logging.error("Critical error", exc_info=True)
+        #     vk_message("Мы получили критическую ошибку, запись в логе", admin)
+        #     condition = {}
 
 
 async def main():

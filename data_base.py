@@ -1,32 +1,21 @@
 import asyncio
 import random
-import configparser
 import pymysql
 import configure_texts
-
-path = "config.ini"
-config = configparser.ConfigParser()
-config.read(path) # Path
-
-host_bd = config.get("Config", "host")
-user_bd = config.get("Config", "user")
-passwd_bd = config.get("Config", "passwd")
-db_bd = config.get("Config", "db")
-charset_bd = config.get("Config", "charset")
-
 
 # Класс для управления БД
 class DB():
     def __init__(self):
-        self.conn = pymysql.connect(host=host_bd,
-                    user=user_bd,
-                    passwd=passwd_bd,
-                    db=db_bd,
-                    charset=charset_bd)
+        self.conn = pymysql.connect(host='localhost',
+                    user='root',
+                    passwd='qwe13245',
+                    db='rpg',
+                    charset="utf8",
+                    port=3528)
         self.cur = self.conn.cursor()
     # Записываем персонажа в БД
     async def create_character(self, character, id):
-        # try:
+        try:
             self.cur.execute("insert into characters values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
@@ -39,21 +28,21 @@ class DB():
                                                       character.agility, character.intelligence,
                                                       "кинжал-2","пусто-0","порваная накидка-2","пусто-0","лапти-1")
             return message
-        # except:
-        #     message = configure_texts.error()
-        #     return message
+        except:
+            message = configure_texts.error()
+            return message
     async def show_character(self, id):
-        self.cur.execute("select characters.class, characters.name, characters.exp, characters.exp_next_lvl, "
+        self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
                          "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
                          "from characters "
                          "join inventory on characters.inventory = inventory.player_id "
-                         "where id = %s", (id))  # добавил characters.class
+                         "where id = %s", (id))
         char = self.cur.fetchone()
-        message = configure_texts.characteristics(char[0], char[1], char[2], char[3],
-                                                  char[4], char[5],
-                                                  char[6], char[7],
-                                                  char[8], char[9], char[10], char[11], char[12])  # добавил еще char
+        message = configure_texts.characteristics(char[0], char[1], char[2],
+                                                  char[3], char[4],
+                                                  char[5], char[6],
+                                                  char[7], char[8], char[9], char[10], char[11])
         return message
     async def load_characters(self):
         self.cur.execute("select characters.id, characters.name, characters.exp, characters.exp_next_lvl, "
@@ -68,6 +57,16 @@ class DB():
         self.cur.execute("select monster from monsters order by rand() limit 1")
         monster = self.cur.fetchone()
         return monster
+    async def get_locations(self):
+        self.cur.execute("select location from locations order by rand() limit 3")
+        locations = self.cur.fetchall()
+        return locations
+    async def get_desc(self, location):
+        self.cur.execute("select descr from locations "
+                         "where location = %s", (location))
+        desc = self.cur.fetchone()
+        print(desc)
+        return desc
     async def delete_character(self, id):
         try:
             self.cur.execute("delete from characters where id = %s", (id))
