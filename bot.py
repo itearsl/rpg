@@ -205,21 +205,24 @@ async def bot_cycle():
                             if mobs[event.message.from_id].health <= 0:
                                 vk_message(configure_texts.monster_defeat(mobs[event.message.from_id].name),
                                            event.object.message["peer_id"])
-                                condition.pop(event.message.from_id)
+                                condition.pop(event.message.from_id)    # Извещение о смерти моба
                                 continue
                             else:
                                 vk_message(
-                                    monster_hp(mobs[event.message.from_id].name, mobs[event.message.from_id].health),
-                                    event.object.message['peer_id'])  # Отправляет сколько хп осталось у моба
+                                    configure_texts.hp(mobs[event.message.from_id].name, mobs[event.message.from_id].health,
+                                                       mobs[event.message.from_id].max_health),
+                                    event.object.message['peer_id']) # Отправляет сколько хп осталось у моба
                                 vk_message(monster_attack(mobs[event.message.from_id].name, monster_damage),
                                            event.object.message[
                                                'peer_id'])  # Отправляет какой моб и сколько урона нанёс урона герою
                                 if characters[event.message.from_id].health <= 0:
                                     vk_message(configure_texts.hero_defeat(), event.object.message["peer_id"])
-                                    condition.pop(event.message.from_id)
+                                    condition.pop(event.message.from_id)    # Извещение о смерти героя
                                     continue
                                 else:
-                                    vk_message(hero_hp(characters[event.message.from_id].health),
+                                    vk_message(configure_texts.hp(characters[event.message.from_id].name,
+                                                                  characters[event.message.from_id].health,
+                                                                  characters[event.message.from_id].max_health),
                                                event.object.message['peer_id'],
                                                fight_keyboard)  # Отправляет сколько хп осталось у персонажа
                                     continue

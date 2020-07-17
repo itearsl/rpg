@@ -19,17 +19,13 @@ def createConfig(path):
 
     config.set("Settings", "monster_defeat", "{} повержен")
 
-    config.set("Settings", "hero_defeat", "Вы погибли") # смерть героя
+    config.set("Settings", "hero_defeat", "Вы погибли")  # смерть героя
 
     config.set("Settings", "hero_attack", "Вы атаковали {} на {}")
 
     config.set("Settings", "attack", "На вас напал {}")
 
-    config.set("Settings", "hero_hp", "У вас осталось {} hp") # добавил хп героя после атаки
-
-    config.set("Settings", "monster_hp", "У {} осталось {} hp")  # добавил хп моба после атаки
-
-    config.set("Settings", "hp", "Здоровье: {}/{} ")
+    config.set("Settings", "hp", "У {} здоровье: {}/{} ")   # Изменил запись
 
     config.set("Settings", "delete_character", "Ваш персонаж успешно удален")
 
@@ -101,21 +97,12 @@ def hero_attack(monster,damage):
     return (config.get("Settings", 'hero_attack')).format(monster,damage)
 
 
-def monster_hp(monster, monster_hp):
-
-    return (config.get("Settings", 'monster_hp')).format(monster, monster_hp)  # Оставшееся хп монстра
-
-
-def hero_hp(hero_hp):
-
-    return (config.get("Settings", 'hero_hp')).format(hero_hp)  # Оставшееся хп героя
-
 def attack(monster):
     return (config.get("Settings", 'attack')).format(monster)
 
 
-def hp(now,max):
-    return (config.get("Settings", 'hp')).format(now,max)
+def hp(character, now, max):    # теперь вывод как для моба, так и для персонажа
+    return (config.get("Settings", 'hp')).format(character, now, max)
 
 
 def create_hero():
