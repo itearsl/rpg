@@ -31,3 +31,19 @@ class KB():
             if i != 2:
                 travel_keyboard.add_line()
         return travel_keyboard
+
+    async def fight_keyboard(self, character):
+        fight_keyboard = VkKeyboard(inline=True)
+        fight_keyboard.add_button("Удар", VkKeyboardColor.NEGATIVE)
+        if character.specialist == "Warrior":
+            fight_keyboard.add_line()
+            fight_keyboard.add_button("Сильный Удар", VkKeyboardColor.NEGATIVE)
+            return fight_keyboard
+        elif character.specialist == "Mage":
+            fight_keyboard.add_line()
+            fight_keyboard.add_button("Огненный шар", VkKeyboardColor.NEGATIVE)
+            return fight_keyboard
+        elif character.specialist == "Rogue":
+            fight_keyboard.add_line()
+            fight_keyboard.add_button("Удар в спину", VkKeyboardColor.NEGATIVE)
+            return fight_keyboard

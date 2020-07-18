@@ -34,12 +34,13 @@ class DB():
     async def show_character(self, id):
         self.cur.execute("select characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence,"
-                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
+                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs, characters.class "
                          "from characters "
                          "join inventory on characters.inventory = inventory.player_id "
                          "where id = %s", (id))
         char = self.cur.fetchone()
-        message = configure_texts.characteristics(char[0], char[1], char[2],
+        print(char)
+        message = configure_texts.characteristics(char[12], char[0], char[1], char[2],
                                                   char[3], char[4],
                                                   char[5], char[6],
                                                   char[7], char[8], char[9], char[10], char[11])

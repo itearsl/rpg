@@ -44,6 +44,7 @@ class Warrior(Character):
         self.agility = 3 + agility
         self.intelligence = 2 + intelligence
         self.armor = 5
+
     def strong_attack(self):
         return (self.damage+self.strength)*2
 
