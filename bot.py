@@ -1,5 +1,5 @@
 from characters import Warrior, Mage, Rogue
-from configure_texts import hero_attack, monster_attack, attack, monster_hp, hero_hp, hero_defeat # импортировал monster_hp, hero_hp, hero_defeat
+from configure_texts import hero_attack, monster_attack, attack, hero_defeat # импортировал monster_hp, hero_hp, hero_defeat
 import configure_texts
 import keyboards
 from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
@@ -52,7 +52,7 @@ vk_session = VkApi(token=vkToken)
 longpoll = VkBotLongPoll(vk_session, club)
 vk = vk_session.get_api()
 upload = VkUpload(vk_session)
-fight_keyboard = VkKeyboard(one_time=False, inline=True)
+fight_keyboard = VkKeyboard(inline=True)
 
 fight_keyboard.add_button('атака', color=VkKeyboardColor.DEFAULT)
 #init DB
@@ -144,10 +144,10 @@ async def bot_cycle():
                     elif event.message.text.lower() == "мой персонаж" and event.message.from_id not in condition:
                         mes_char = await db.show_character(event.message.from_id)
                         vk_message(mes_char, event.object.message['peer_id'])
-                    elif event.message.text.lower() == "бой" and event.message.from_id not in condition:
-                        condition[event.message.from_id] = "бой"
-                        mob = await db.get_monster()
-                        mobs[event.message.from_id] = globals()[mob[0]](characters[event.message.from_id].lvl)
+                    elif event.message.text.lower() == "охота" and event.message.from_id not in condition:
+                        condition[event.message.from_id] = "охота"
+                        mob = await db.get_monster(characters[event.message.from_id].current_location) #Получаем моба из текущей локации
+                        mobs[event.message.from_id] = globals()[mob[0]](characters[event.message.from_id].lvl) #Создаем моба
                         vk_message(attack(mobs[event.message.from_id].name), event.object.message["peer_id"], fight_keyboard)
                     elif event.message.text.lower() == "удалить персонажа" and event.message.from_id not in condition:
                         del_message = await db.delete_character(event.message.from_id)
@@ -157,6 +157,9 @@ async def bot_cycle():
                         locations = await db.get_locations()
                         tr_keyboard = await kb.travel_keyboard(locations)
                         vk_message("Куда вы хотите отправиться?", event.object.message["peer_id"], tr_keyboard)
+                    elif event.message.text.lower() == "вернуться в дрифтвуд" and event.message.from_id not in condition:
+                        characters[event.message.from_id].current_location = "Дрифтвуд" #Меняем текущую локацию персонажа
+                        vk_message(configure_texts.Terrain("Дрифтвуд"), event.object.message["peer_id"], kb.town_keyboard) #Сообщение о прибытии в город и вывод городской клавы
                     # проверка состояний
                     elif event.message.from_id in condition and condition[event.message.from_id] == "создание персонажа":
                         if event.message.text.lower() == "выход":
@@ -178,23 +181,7 @@ async def bot_cycle():
                         mes = await db.create_character(characters[event.message.from_id], event.message.from_id)
                         vk_message(mes, event.object.message["peer_id"])
                         condition.pop(event.message.from_id)
-                    elif event.message.from_id in condition and condition[event.message.from_id] == "предметы":
-                        if event.message.text.lower() == "выход":
-                            vk.messages.send(
-                                random_id=get_random_id(),
-                                peer_id=event.object.message['peer_id'],
-                                message="Жаль что мы не поиграем",
-                            )
-                            condition.pop(event.message.from_id)
-                            continue
-                        item = event.message.text.split(" ")
-                        await db.add_item(item)
-                        vk.messages.send(
-                            random_id=get_random_id(),
-                            peer_id=event.object.message['peer_id'],
-                            message="Предмет добавлен",
-                        )
-                    elif event.message.from_id in condition and condition[event.message.from_id] == "бой":
+                    elif event.message.from_id in condition and condition[event.message.from_id] == "охота":
                         if event.message.text.lower() == "атака":
                             hero_damage = characters[event.message.from_id].attack()    # Урон героя
                             monster_damage = mobs[event.message.from_id].attack()   # Урон монстра
@@ -227,8 +214,10 @@ async def bot_cycle():
                                                fight_keyboard)  # Отправляет сколько хп осталось у персонажа
                                     continue
                     elif event.message.from_id in condition and condition[event.message.from_id] == "путешествие":
-                        desc = await db.get_desc(event.message.text)
-                        vk_message(desc, event.object.message["peer_id"])
+                        desc = await db.get_desc(event.message.text) #Получаем описание локации
+                        characters[event.message.from_id].current_location = event.message.text #Меняем текущую локацию перснажа
+                        vk_message(configure_texts.Terrain(event.message.text), event.object.message["peer_id"])
+                        vk_message(desc, event.object.message["peer_id"], kb.choice_keyboard) #Выводим описание и клавиатуру
                         condition.pop(event.message.from_id)
 
         # except Exception as err:

@@ -53,8 +53,10 @@ class DB():
                          )
         chars = self.cur.fetchall()
         return chars
-    async def get_monster(self):
-        self.cur.execute("select monster from monsters order by rand() limit 1")
+    async def get_monster(self, current_location):
+        self.cur.execute("select monster from monsters "
+                         "where location = 'Все' or location = %s"
+                         "order by rand() limit 1", (current_location))
         monster = self.cur.fetchone()
         return monster
     async def get_locations(self):
@@ -65,7 +67,6 @@ class DB():
         self.cur.execute("select descr from locations "
                          "where location = %s", (location))
         desc = self.cur.fetchone()
-        print(desc)
         return desc
     async def delete_character(self, id):
         try:

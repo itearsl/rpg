@@ -3,8 +3,6 @@ import random
 class Monster():
     def __init__(self, lvl):
         self.lvl = lvl or 1
-        # self.health = 15 + 2*self.lvl
-        # self.max_health = 15 + 2*self.lvl         Я НЕ УВЕРЕН ЧТО ЭТИ СТРОКИ НУЖНЫ,
         self.damage = 5
         self.armor = 0
         self.evasion_modify = 0.03
@@ -63,6 +61,7 @@ class Vile_fiend(Monster):
 class Troll(Monster):
     def __init__(self, lvl):
         super().__init__(lvl)
-        self.name = "Троль"
+        self.name = "Тролль"
         self.damage = 13 + self.lvl*2
+        self.health = 13 + self.lvl * 2
         self.max_health = 13 + self.lvl*2

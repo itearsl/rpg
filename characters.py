@@ -10,10 +10,11 @@ class Character():
         self.damage = 5
         self.armor = 0
         self.health = 40 + self.strength*self.lvl
-        self.max_health = 40 + self.strength*self.lvl
+        self.max_health = 40 + self.strength * self.lvl
         self.evasion_modify = 0.05
         self.exp = 0
         self.exp_next_lvl = round(exp(self.lvl))
+        self.current_location = "Дрифтвуд"
         self.inventory = []
 
     def attack(self):
