@@ -83,5 +83,21 @@ class DB():
         self.cur.execute("insert into items(name, lvl, type, value) values (%s, %s, %s, %s)",
                          ("{} {}".format(item[0], item[1]), item[2], item[3], item[4]))
         self.conn.commit()
+    async def get_equip(self, part, id):
+        task = "select {} from inventory where player_id = {}".format(part, id)
+        self.cur.execute(task)
+        equiped = self.cur.fetchone()
+        return equiped
+    async def change_equip(self, id, equip):
+        task = "update inventory set {} = '{}-{}' " \
+               "where player_id = {}".format(equip[1], equip[0], equip[2], id)
+        self.cur.execute(task)
+        self.conn.commit()
+    async def get_item(self, lvl):
+        self.cur.execute("select name, type, value from items "
+                         "where lvl = %s "
+                         "order by rand() limit 1",(lvl))
+        item = self.cur.fetchone()
+        return item
     def close(self):
         self.conn.close()

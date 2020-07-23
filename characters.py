@@ -15,6 +15,7 @@ class Character():
         self.exp = 0
         self.exp_next_lvl = round(exp(self.lvl))
         self.current_location = "Дрифтвуд"
+        self.money = 0
         self.inventory = []
 
     def attack(self):

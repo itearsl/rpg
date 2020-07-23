@@ -27,6 +27,8 @@ def createConfig(path):
 
     config.set("Settings", "hp", "У {} здоровье: {}/{} ")   # Изменил запись
 
+    config.set("Settings", "drop", "Вам выпал {}")
+
     config.set("Settings", "delete_character", "Ваш персонаж успешно удален")
 
     config.set("Settings", "error", "Ошибка")
@@ -34,10 +36,11 @@ def createConfig(path):
     config.set("Settings", "help",
 '''
 Команды:
-&#128313; !Создать персонажа
-&#128313; !Мой персонаж
-&#128313; !Удалить персонажа
-&#128313; !бой (для теста)      
+&#128313; Создать персонажа
+&#128313; Мой персонаж
+&#128313; Удалить персонажа
+&#128313; Охота
+&#128313; Путешествие     
 ''')
 
     config.set("Settings","create_hero",
@@ -114,6 +117,9 @@ def delete_character():
 def characteristics(person_class, nick, exp, exp_next_lvl, lvl, strength, intelligence, agility, weapon, head, body, hands, legs):
     return (config.get("Settings", 'characteristics')).format(person_class, nick, exp, exp_next_lvl, lvl, strength,intelligence, agility,
                                                             weapon, head, body, hands, legs) # добавил person_class
+
+def drop(item_name):
+    return (config.get("Settings", "drop")).format(item_name)
 
 def help():
     return config.get("Settings", "help")

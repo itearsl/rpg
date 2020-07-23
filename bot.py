@@ -88,6 +88,12 @@ async def load_characters_f():
         characters[id_user].damage += damage
         characters[id_user].armor += armor
 
+async def equipment_comparison(id, equip):
+    equiped_item = await db.get_equip(equip[1], id)
+    if equip[2] > int(equiped_item[0].split("-")[1]):
+        await db.change_equip(id, equip)
+
+
 async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyboard):
     vk_message(hero_attack(mobs[from_id].name, hero_damage),
                peer_id)  # Отправляет сколько и кому нанес урон герой
@@ -95,6 +101,9 @@ async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyb
         vk_message(configure_texts.monster_defeat(mobs[from_id].name),
                    peer_id)
         condition.pop(from_id)  # Извещение о смерти моба
+        item = await db.get_item(characters[from_id].lvl)
+        vk_message(configure_texts.drop(item[0]), peer_id)
+        await equipment_comparison(from_id, item)
     else:
         vk_message(
             configure_texts.hp(mobs[from_id].name, mobs[from_id].health,
