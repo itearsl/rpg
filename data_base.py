@@ -48,7 +48,8 @@ class DB():
     async def load_characters(self):
         self.cur.execute("select characters.id, characters.name, characters.exp, characters.exp_next_lvl, "
                          "characters.lvl, characters.strength, characters.agility, characters.intelligence, characters.class, "
-                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs "
+                         "inventory.weapon, inventory.head, inventory.body, inventory.hands, inventory.legs, "
+                         "characters.money "
                          "from characters "
                          "join inventory on characters.inventory = inventory.player_id "
                          )
@@ -94,7 +95,7 @@ class DB():
         self.cur.execute(task)
         self.conn.commit()
     async def get_item(self, lvl):
-        self.cur.execute("select name, type, value from items "
+        self.cur.execute("select name, type, value, lvl from items "
                          "where lvl = %s "
                          "order by rand() limit 1",(lvl))
         item = self.cur.fetchone()
