@@ -113,6 +113,8 @@ async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyb
         item = await db.get_item(characters[from_id].lvl)
         vk_message(configure_texts.drop(item[0]), peer_id)
         await equipment_comparison(from_id, item)
+        characters[from_id].exp += mobs[from_id].exp
+        mobs.pop(from_id)
     else:
         vk_message(
             configure_texts.hp(mobs[from_id].name, mobs[from_id].health,
@@ -231,24 +233,17 @@ async def bot_cycle():
                             characters[event.message.from_id].health -= 0
                         if event.message.text.lower() == "удар":
                             hero_damage = characters[event.message.from_id].attack()    # Урон героя
-                            mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
-                            await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
-                                               monster_damage, fight_keyboard)
                         elif event.message.text.lower() == "огненный шар":
                             hero_damage = characters[event.message.from_id].fireball()    # Урон героя
-                            mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
-                            await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
-                                               monster_damage, fight_keyboard)
                         if event.message.text.lower() == "сильный удар":
                             hero_damage = characters[event.message.from_id].strong_attack()    # Урон героя
-                            mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
-                            await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
-                                               monster_damage, fight_keyboard)
                         elif event.message.text.lower() == "удар в спину":
                             hero_damage = characters[event.message.from_id].backstab()    # Урон героя
-                            mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
-                            await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
-                                               monster_damage, fight_keyboard)
+                        mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
+                        await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
+                                           monster_damage, fight_keyboard)
+
+
                     elif event.message.from_id in condition and condition[event.message.from_id] == "путешествие":
                         desc = await db.get_desc(event.message.text) #Получаем описание локации
                         characters[event.message.from_id].current_location = event.message.text #Меняем текущую локацию перснажа

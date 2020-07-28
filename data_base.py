@@ -1,5 +1,3 @@
-import asyncio
-import random
 import pymysql
 import configure_texts
 
@@ -16,17 +14,17 @@ class DB():
     # Записываем персонажа в БД
     async def create_character(self, character, id):
         try:
-            self.cur.execute("insert into characters values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            self.cur.execute("insert into characters values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                            (
                            id, character.name, character.exp, character.exp_next_lvl, character.lvl, character.strength,
-                           character.agility, character.intelligence, id, character.specialist))
+                           character.agility, character.intelligence, id, character.specialist, character.money))
             self.cur.execute('insert into inventory values(%s,"кинжал-2","пусто-0","порваная накидка-2","пусто-0","лапти-1")',
                              (id))
             self.conn.commit()
-            message = configure_texts.characteristics(character.name, character.exp, character.exp_next_lvl,
+            message = configure_texts.characteristics(character.specialist ,character.name, character.exp, character.exp_next_lvl,
                                                       character.lvl, character.strength,
                                                       character.agility, character.intelligence,
-                                                      "кинжал-2","пусто-0","порваная накидка-2","пусто-0","лапти-1")
+                                                      "кинжал-2", "пусто-0", "порваная накидка-2", "пусто-0", "лапти-1")
             return message
         except:
             message = configure_texts.error()
@@ -39,7 +37,6 @@ class DB():
                          "join inventory on characters.inventory = inventory.player_id "
                          "where id = %s", (id))
         char = self.cur.fetchone()
-        print(char)
         message = configure_texts.characteristics(char[12], char[0], char[1], char[2],
                                                   char[3], char[4],
                                                   char[5], char[6],
@@ -96,7 +93,7 @@ class DB():
         self.conn.commit()
     async def get_item(self, lvl):
         self.cur.execute("select name, type, value, lvl from items "
-                         "where lvl = %s "
+                         "where lvl <= %s "
                          "order by rand() limit 1",(lvl))
         item = self.cur.fetchone()
         return item
