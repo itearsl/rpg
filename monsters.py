@@ -6,6 +6,7 @@ class Monster():
         self.damage = 5
         self.armor = 0
         self.evasion_modify = 0.03
+        self.exp = 0.25*self.lvl
     def attack(self):
         return (self.damage)
     def evasion(self):

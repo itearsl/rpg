@@ -5,8 +5,6 @@ import keyboards
 from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
 import random
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-import traceback
-import datetime
 import configparser
 from vk_api import VkApi
 from vk_api.upload import VkUpload
@@ -15,6 +13,7 @@ from vk_api.utils import get_random_id
 import data_base
 import asyncio
 import logging
+from math import exp
 
 path = "config.ini"
 config = configparser.ConfigParser()
@@ -101,19 +100,33 @@ async def equipment_comparison(id, equip):
     else:
         characters[id].money += 10*equip[3]
 
-
+async def lvl_up(character, characteristics, peer_id):
+    if check_lvl_up(characteristics)[-1]:
+        character.lvl += 1
+        character.exp_next_lvl = round(exp(character.lvl))
+        character.strength += int(characteristics[0])
+        character.agility += int(characteristics[1])
+        character.intelligence += int(characteristics[2])
+        character.health = 40 + character.strength*character.lvl
+        character.max_health = character.health
+        vk_message("Уровень успешно увеличен!", peer_id)
+    else:
+        vk_message(check_lvl_up(characteristics)[0], peer_id)
 
 async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyboard):
     vk_message(hero_attack(mobs[from_id].name, hero_damage),
                peer_id)  # Отправляет сколько и кому нанес урон герой
     if mobs[from_id].health <= 0:
         vk_message(configure_texts.monster_defeat(mobs[from_id].name),
-                   peer_id)
-        condition.pop(from_id)  # Извещение о смерти моба
+                   peer_id) # Извещение о смерти моба
+        condition.pop(from_id)
         item = await db.get_item(characters[from_id].lvl)
         vk_message(configure_texts.drop(item[0]), peer_id)
         await equipment_comparison(from_id, item)
         characters[from_id].exp += mobs[from_id].exp
+        if characters[from_id].exp >= characters[from_id].exp_next_lvl:
+            condition[from_id] = "lvl_up"
+            vk_message(configure_texts.lvl_up(), peer_id)
         mobs.pop(from_id)
     else:
         vk_message(
@@ -149,7 +162,17 @@ def vk_message(*args):
             message=args[0]
         )
 
-
+def check_lvl_up(message):
+    if len(message) != 3:
+        return "Пожалуйста, введите данные по примеру, например 4 2 1", False
+    strength = message[0]
+    agility = message[1]
+    intelligence = message[2]
+    if strength.isdigit() and agility.isdigit() and intelligence.isdigit():
+        if int(strength) + int(agility) + int(intelligence) != 7:
+            return "Сумма характеристик должна быть равна 7, пожалуйста введите характеристики через пробел, например 4 2 1", False
+        return "Отлично, вы правильно ввели характеристики!", True
+    return "Пожалуйста, введите числами характеристики, например 4 2 1", False
 def check_characters(message):
     """Check  characters validate"""
     if len(message) != 5:
@@ -242,14 +265,16 @@ async def bot_cycle():
                         mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
                         await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
                                            monster_damage, fight_keyboard)
-
-
                     elif event.message.from_id in condition and condition[event.message.from_id] == "путешествие":
                         desc = await db.get_desc(event.message.text) #Получаем описание локации
                         characters[event.message.from_id].current_location = event.message.text #Меняем текущую локацию перснажа
                         vk_message(configure_texts.Terrain(event.message.text), event.object.message["peer_id"])
                         vk_message(desc, event.object.message["peer_id"], kb.choice_keyboard) #Выводим описание и клавиатуру
                         condition.pop(event.message.from_id)
+                    elif event.message.from_id in condition and condition[event.message.from_id] == "lvl_up":
+                        characteristics = event.message.text.split(" ")
+                        await lvl_up(characters[event.message.from_id], characteristics,
+                                     event.object.message['peer_id'])
 
         # except Exception as err:
         #

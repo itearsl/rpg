@@ -33,6 +33,15 @@ def createConfig(path):
 
     config.set("Settings", "error", "Ошибка")
 
+    config.set("Settings", "lvl_up",
+'''
+&#128313; Уровень повышен!
+&#128313; Вы получили 7 очков для повышения характеристик
+&#128313; Введите как бы вы хотели их распределить
+&#128313; Например: 4 2 1 
+&#128313; 4 - в силу, 2 - в ловкость, 1 - в интелект
+''')
+
     config.set("Settings", "help",
 '''
 Команды:
@@ -120,6 +129,9 @@ def characteristics(person_class, nick, exp, exp_next_lvl, lvl, strength, intell
 
 def drop(item_name):
     return (config.get("Settings", "drop")).format(item_name)
+
+def lvl_up():
+    return config.get("Settings", "lvl_up")
 
 def help():
     return config.get("Settings", "help")

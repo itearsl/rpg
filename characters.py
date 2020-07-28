@@ -1,5 +1,7 @@
 import random
 from math import exp, ceil
+
+
 class Character():
     def __init__(self, name):
         self.name = name
