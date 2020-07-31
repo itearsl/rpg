@@ -1,8 +1,8 @@
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
-mage_skills = ["Огненный шар", "Электрический разряд", "Электрическое касание"]
-warrior_skills = ["Сильный удар", "Смерч", "Блиц-атака"]
-rogue_skills = ["Удар в спину", "Метательный нож", "Порченый клинок"]
+Mage_skills = ["Огненный шар", "Электрический разряд", "Электрическое касание"]
+Warrior_skills = ["Сильный удар", "Смерч", "Блиц-атака"]
+Rogue_skills = ["Удар в спину", "Метательный нож", "Порченый клинок"]
 
 
 class KB():
@@ -41,24 +41,10 @@ class KB():
         k = 0
         fight_keyboard = VkKeyboard(inline=True)
         fight_keyboard.add_button("Удар", VkKeyboardColor.NEGATIVE)
-        if character.specialist == "Warrior":
-            while i <= character.lvl:
-                fight_keyboard.add_line()
-                fight_keyboard.add_button(warrior_skills[k], VkKeyboardColor.NEGATIVE)
-                i += 2
-                k += 1
-            return fight_keyboard
-        elif character.specialist == "Mage":
-            while i <= character.lvl:
-                fight_keyboard.add_line()
-                fight_keyboard.add_button(mage_skills[k], VkKeyboardColor.NEGATIVE)
-                i += 2
-                k += 1
-            return fight_keyboard
-        elif character.specialist == "Rogue":
-            while i <= character.lvl:
-                fight_keyboard.add_line()
-                fight_keyboard.add_button(rogue_skills[k], VkKeyboardColor.NEGATIVE)
-                i += 2
-                k += 1
-            return fight_keyboard
+        while i <= character.lvl:
+            fight_keyboard.add_line()
+            fight_keyboard.add_button(globals()[character.specialist+"_skills"][k], VkKeyboardColor.NEGATIVE)
+            i += 2
+            k += 1
+        return fight_keyboard
+
