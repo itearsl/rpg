@@ -1,6 +1,10 @@
 import pymysql
 import configure_texts
 
+
+
+
+
 # Класс для управления БД
 class DB():
     def __init__(self):
@@ -52,6 +56,15 @@ class DB():
                          )
         chars = self.cur.fetchall()
         return chars
+    def save_characters(self, hero, id):
+        self.cur.execute("update characters set exp = %s where id = %s", (hero.exp, id))
+        self.cur.execute("update characters set exp_next_lvl = %s where id = %s", (hero.exp_next_lvl, id))
+        self.cur.execute("update characters set lvl = %s where id = %s", (hero.lvl, id))
+        self.cur.execute("update characters set strength = %s where id = %s", (hero.strength, id))
+        self.cur.execute("update characters set intelligence = %s where id = %s", (hero.intelligence, id))
+        self.cur.execute("update characters set agility = %s where id = %s", (hero.agility, id))
+        self.cur.execute("update characters set money = %s where id = %s", (hero.money, id))
+        self.conn.commit()
     async def get_monster(self, current_location):
         self.cur.execute("select monster from monsters "
                          "where location = 'Все' or location = %s"

@@ -27,7 +27,7 @@ def createConfig(path):
 
     config.set("Settings", "hp", "У {} здоровье: {}/{} ")   # Изменил запись
 
-    config.set("Settings", "drop", "Вам выпал {}")
+    config.set("Settings", "drop", "Вам выпал предмет {}")
 
     config.set("Settings", "delete_character", "Ваш персонаж успешно удален")
 

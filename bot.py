@@ -4,6 +4,8 @@ import configure_texts
 import keyboards
 from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
 import random
+import time
+import functools
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import configparser
 from vk_api import VkApi
@@ -14,6 +16,7 @@ import data_base
 import asyncio
 import logging
 from math import exp
+import threading
 
 path = "config.ini"
 config = configparser.ConfigParser()
@@ -51,6 +54,7 @@ vk_session = VkApi(token=vkToken)
 longpoll = VkBotLongPoll(vk_session, club)
 vk = vk_session.get_api()
 upload = VkUpload(vk_session)
+
 #init DB
 try:
     db = data_base.DB()
@@ -103,6 +107,7 @@ async def equipment_comparison(id, equip):
 async def lvl_up(character, characteristics, peer_id):
     if check_lvl_up(characteristics)[-1]:
         character.lvl += 1
+        character.exp = 0
         character.exp_next_lvl = round(exp(character.lvl))
         character.strength += int(characteristics[0])
         character.agility += int(characteristics[1])
@@ -121,7 +126,7 @@ async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyb
                    peer_id) # Извещение о смерти моба
         condition.pop(from_id)
         item = await db.get_item(characters[from_id].lvl)
-        vk_message(configure_texts.drop(item[0]), peer_id)
+        vk_message(configure_texts.drop(item[0]), peer_id, kb.choice_keyboard)
         await equipment_comparison(from_id, item)
         characters[from_id].exp += mobs[from_id].exp
         if characters[from_id].exp >= characters[from_id].exp_next_lvl:
@@ -145,6 +150,10 @@ async def fight_checks(from_id, peer_id, hero_damage, monster_damage, fight_keyb
                        peer_id,
                        fight_keyboard)  # Отправляет сколько хп осталось у персонажа
 
+def save_characters():
+    threading.Timer(30.0, save_characters).start()
+    for character in characters:
+        db.save_characters(characters[character], character)
 
 def vk_message(*args):
 
@@ -195,6 +204,7 @@ async def bot_cycle():
             if load_characters:
                 load_characters = False
                 await load_characters_f()
+                save_characters()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
                     logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
@@ -258,7 +268,7 @@ async def bot_cycle():
                             hero_damage = characters[event.message.from_id].attack()    # Урон героя
                         elif event.message.text.lower() == "огненный шар":
                             hero_damage = characters[event.message.from_id].fireball()    # Урон героя
-                        if event.message.text.lower() == "сильный удар":
+                        elif event.message.text.lower() == "сильный удар":
                             hero_damage = characters[event.message.from_id].strong_attack()    # Урон героя
                         elif event.message.text.lower() == "удар в спину":
                             hero_damage = characters[event.message.from_id].backstab()    # Урон героя
@@ -273,8 +283,10 @@ async def bot_cycle():
                         condition.pop(event.message.from_id)
                     elif event.message.from_id in condition and condition[event.message.from_id] == "lvl_up":
                         characteristics = event.message.text.split(" ")
+                        condition.pop(event.message.from_id)
                         await lvl_up(characters[event.message.from_id], characteristics,
                                      event.object.message['peer_id'])
+
 
         # except Exception as err:
         #
