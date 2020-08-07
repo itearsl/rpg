@@ -25,9 +25,9 @@ config.read(path) # Path
 vkToken = config.get("Config",'vkToken')
 admin = config.get("Config",'admin')
 club = config.get("Config",'club')
-
-
-
+#кулдауны
+countdowns = {
+}
 db_len = 15
 #Персонажи
 
@@ -80,6 +80,9 @@ async def load_characters_f():
         characters[id_user].strength = int(character[5])
         characters[id_user].agility = int(character[6])
         characters[id_user].intelligence = int(character[7])
+        characters[id_user].exp = int(character[2])
+        characters[id_user].exp_next_lvl = int(character[3])
+        characters[id_user].lvl = int(character[4])
         characters[id_user].money = int(character[14])
 
         list_armor = []
@@ -170,7 +173,14 @@ def vk_message(*args):
             keyboard=args[2].get_keyboard(),
             message=args[0]
         )
-
+async def attack_with_armor(monster_damage, from_id):
+    if monster_damage > characters[from_id].armor:
+        characters[from_id].health += characters[from_id].armor - monster_damage
+    else:
+        characters[from_id].health -= 0
+async def countdown_reduction(countdowns):
+    for kd in countdowns:
+        kd -= 1
 def check_lvl_up(message):
     if len(message) != 3:
         return "Пожалуйста, введите данные по примеру, например 4 2 1", False
@@ -207,7 +217,7 @@ async def bot_cycle():
                 save_characters()
             for event in longpoll.listen():
                 if event.type == VkBotEventType.MESSAGE_NEW:
-                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id,event.message.text))
+                    logging.debug("We got new message from: {}. Text message: {}".format(event.message.from_id, event.message.text))
                     if event.message.text.lower() == "help" and event.message.from_id not in condition:
                         peer_id = event.object.message['peer_id']
                         vk_message(configure_texts.help(), peer_id)
@@ -220,6 +230,7 @@ async def bot_cycle():
                         vk_message(mes_char, event.object.message['peer_id'])
                     elif event.message.text.lower() == "охота" and event.message.from_id not in condition:
                         condition[event.message.from_id] = "охота"
+                        countdowns[event.message.from_id] = [0, 0, 0, 0]
                         mob = await db.get_monster(characters[event.message.from_id].current_location) #Получаем моба из текущей локации
                         mobs[event.message.from_id] = globals()[mob[0]](random.randint(characters[event.message.from_id].lvl-2,
                                                                                        characters[event.message.from_id].lvl+3)) #Создаем моба
@@ -260,19 +271,35 @@ async def bot_cycle():
                     elif event.message.from_id in condition and condition[event.message.from_id] == "охота":
                         fight_keyboard = await kb.fight_keyboard(characters[event.message.from_id])
                         monster_damage = mobs[event.message.from_id].attack()
-                        if monster_damage > characters[event.message.from_id].armor:
-                            characters[event.message.from_id].health += characters[event.message.from_id].armor - monster_damage
-                        else:
-                            characters[event.message.from_id].health -= 0
+                        await attack_with_armor(monster_damage, event.message.from_id)
                         if event.message.text.lower() == "удар":
                             hero_damage = characters[event.message.from_id].attack()    # Урон героя
                         elif event.message.text.lower() == "огненный шар":
-                            hero_damage = characters[event.message.from_id].fireball()    # Урон героя
+                            if countdowns[event.message.from_id][0] == 0:
+                                hero_damage = characters[event.message.from_id].fireball()    # Урон героя
+                                countdowns[event.message.from_id][0] = 2
+                            else:
+                                hero_damage = 0
+                                vk_message(configure_texts.kd(countdowns[event.message.from_id][0]), event.message.from_id, fight_keyboard)
+                                continue
                         elif event.message.text.lower() == "сильный удар":
-                            hero_damage = characters[event.message.from_id].strong_attack()    # Урон героя
+                            if countdowns[event.message.from_id][0] == 0:
+                                hero_damage = characters[event.message.from_id].strong_attack()    # Урон героя
+                                countdowns[event.message.from_id][0] = 2
+                            else:
+                                hero_damage = 0
+                                vk_message(configure_texts.kd(countdowns[event.message.from_id][0]), event.message.from_id, fight_keyboard)
+                                continue
                         elif event.message.text.lower() == "удар в спину":
-                            hero_damage = characters[event.message.from_id].backstab()    # Урон героя
+                            if countdowns[event.message.from_id][0] == 0:
+                                hero_damage = characters[event.message.from_id].backstab()  # Урон героя
+                                countdowns[event.message.from_id][0] = 2
+                            else:
+                                hero_damage = 0
+                                vk_message(configure_texts.kd(countdowns[event.message.from_id][0]), event.message.from_id, fight_keyboard)
+                                continue
                         mobs[event.message.from_id].health -= hero_damage  # вычитает из хп моба урона от героя
+                        await countdown_reduction(countdowns[event.message.from_id])
                         await fight_checks(event.message.from_id, event.object.message["peer_id"], hero_damage,
                                            monster_damage, fight_keyboard)
                     elif event.message.from_id in condition and condition[event.message.from_id] == "путешествие":

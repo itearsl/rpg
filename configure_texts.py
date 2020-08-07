@@ -33,6 +33,8 @@ def createConfig(path):
 
     config.set("Settings", "error", "Ошибка")
 
+    config.set("Settings", "kd", "Эта способность еще в кулдауне. Осталось {} ходов")
+
     config.set("Settings", "lvl_up",
 '''
 &#128313; Уровень повышен!
@@ -139,5 +141,7 @@ def help():
 def error():
     return config.get("Settings", "error")
 
+def kd(countdown):
+    return (config.get("Settings", "kd")).format(countdown)
 
 createConfig(path)
