@@ -2,7 +2,7 @@ from characters import Warrior, Mage, Rogue
 from configure_texts import hero_attack, monster_attack, attack, hero_defeat # импортировал monster_hp, hero_hp, hero_defeat
 import configure_texts
 import keyboards
-from monsters import Troll, King_fire_slug, Skeleton, Goblin, Vile_fiend, Grog
+from monsters import *
 import random
 import time
 import functools
