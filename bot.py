@@ -67,8 +67,6 @@ except:
 kb = keyboards.KB()
 async def load_characters_f():
 
-    """Все равно пока говно, я подумаю как сделать лучше"""
-
     chars = await db.load_characters()
     for character in chars:
         id_user = character[0]
