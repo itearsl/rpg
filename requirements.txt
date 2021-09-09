@@ -14,7 +14,7 @@ multidict==4.7.6
 packaging==20.4
 pip==19.0.3
 pluggy==0.13.1
-py==1.9.0
+py==1.10.0
 PyMySQL==0.9.3
 pyparsing==2.4.7
 pytest==5.4.3
