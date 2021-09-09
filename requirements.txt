@@ -21,7 +21,7 @@ pytest==5.4.3
 requests==2.23.0
 setuptools==40.8.0
 six==1.15.0
-urllib3==1.25.9
+urllib3==1.26.5
 vk==2.0.2
 vk-api==11.8.0
 wcwidth==0.2.5
